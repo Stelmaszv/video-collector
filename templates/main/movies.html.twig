@@ -1,14 +1,17 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}Hello MainController!{% endblock %}
 {% block body %}
-    <h2>producents</h2>
+    <h2>filmy</h2>
     {% for el in producents %}
         <div class="card" style="width: 18rem;">
-            <img src="{{ asset('producent/' ~ el.id ~ '/' ~  el.avatar) }}" class="card-img-top" alt="...">
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="{{el.muvie_src}}" class="card-img-top" allowfullscreen></iframe>
+            </div>
             <div class="card-body">
                 <h5 class="card-title">{{el.name}}</h5>
                 <p class="card-text">{{el.description}}</p>
-                <a href="{{path('show_series_in_producent',{id:el.id})}}" class="btn btn-primary">Go somewhere</a>
+                <a href="{{path('show_movie',{id:el.id})}}" class="btn btn-primary">Go somewhere</a>
             </div>
         </div>
     {% endfor %}

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Tags;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use App\Repository\abstractRepository;
 
 /**
  * @method Tags|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,7 +13,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Tags[]    findAll()
  * @method Tags[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TagsRepository extends ServiceEntityRepository
+class TagsRepository extends abstractRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

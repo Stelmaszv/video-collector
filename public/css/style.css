@@ -1,0 +1,16 @@
+.cradSection{
+    display: flex;
+    padding: 15px;
+    flex-wrap: wrap;
+}
+.cradSection>.card{
+    margin-left: 5px;
+    width: 13rem;
+    margin-top: 10px;
+}
+.cradSection>.card>.card-body>.card-title{
+    height: 70px;
+}
+.videoName{
+    padding: 10px;
+}

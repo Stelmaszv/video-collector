@@ -29,6 +29,11 @@ class Tags
     private $name;
 
     /**
+     * @ORM\Column(type="text")
+     */
+    private $description;
+
+    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Movies", mappedBy="tags")
      */
     private $movies;
@@ -42,7 +47,17 @@ class Tags
     {
         return $this->id;
     }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 
+    public function setDescription(?string $avatar): self
+    {
+        $this->description = $avatar;
+
+        return $this;
+    }
     public function getAvatar(): ?string
     {
         return $this->avatar;
@@ -93,5 +108,8 @@ class Tags
         }
 
         return $this;
+    }
+    public function __toString(){
+        return $this->name;
     }
 }

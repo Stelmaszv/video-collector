@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Producent;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use App\Repository\abstractRepository;
 
 /**
  * @method Producent|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,7 +13,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Producent[]    findAll()
  * @method Producent[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProducentRepository extends ServiceEntityRepository
+class ProducentRepository extends abstractRepository
 {
     public function __construct(ManagerRegistry $registry){
         parent::__construct($registry, Producent::class);

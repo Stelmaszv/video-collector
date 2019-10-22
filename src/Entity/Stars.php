@@ -23,6 +23,10 @@ class Stars
      */
     private $name;
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $avatar;
+    /**
      * @ORM\Column(type="text")
      */
     private $description;
@@ -45,7 +49,6 @@ class Stars
     {
         return $this->id;
     }
-
     public function getName(): ?string
     {
         return $this->name;
@@ -54,6 +57,28 @@ class Stars
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(string $name): self
+    {
+        $this->avatar = $name;
+
+        return $this;
+    }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $name): self
+    {
+        $this->description = $name;
 
         return $this;
     }
@@ -111,5 +136,8 @@ class Stars
         }
 
         return $this;
+    }
+    public function __toString(){
+        return $this->name;
     }
 }

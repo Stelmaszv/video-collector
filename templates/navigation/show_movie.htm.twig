@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+{% block title %}Hello MovieController!{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-7">
+                <h2 class="videoName">{{movie.name}}</h2>
+            <div class="videoSection">
+                {% if movie.link%}
+                    <div class="embed-responsive embed-responsive-16by9 videoItem" >
+                        <iframe class="embed-responsive-item" src="{{movie.muvie_src}}" allowfullscreen></iframe>
+                    </div>
+                {% else %}
+                    <video  controls class="videoItem">
+                        <source src="{{movie.muvie_src}}" >
+                    </video>
+                {% endif %}
+                <div class="row">
+                    <div class="col-2">
+                        tags
+                    </div>
+                    <div class="col-10">
+                        {% for el in tags %}
+                            <a href="{{path('show_movies_in_category',{id:el.id})}}">{{el}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        stars
+                    </div>
+                    <div class="col-10">
+                        {% for el in stars %}
+                            <a href="{{path('show_movies_with_star',{id:el.id})}}">{{el}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Movies with thee stars</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">tags</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">sereis</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    {% for el in stars_in_movies %}
+                        <div class="row">
+                            <div class="col-4">
+                                    {% if el.link%}
+                                         <div class="embed-responsive embed-responsive-16by9 videoItem" >
+                                            <iframe class="embed-responsive-item" src="{{movie.muvie_src}}" allowfullscreen></iframe>
+                                        </div>
+                                    {% else %}
+                                        <video  controls class="videoItem">
+                                            <source src="{{movie.muvie_src}}" >
+                                        </video>
+                                   {% endif %}
+                            </div>
+                            <div class="col-8"><a href="{{path('show_movie',{id:el.id})}}">{{el.name}}</a></div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    {% for el in tags_in_movies %}
+                        <div class="row">
+                            <div class="col-4">
+                                    {% if el.link%}
+                                         <div class="embed-responsive embed-responsive-16by9 videoItem" >
+                                            <iframe class="embed-responsive-item" src="{{movie.muvie_src}}" allowfullscreen></iframe>
+                                        </div>
+                                    {% else %}
+                                        <video  controls class="videoItem">
+                                            <source src="{{movie.muvie_src}}" >
+                                        </video>
+                                   {% endif %}
+                            </div>
+                            <div class="col-8"><a href="{{path('show_movie',{id:el.id})}}">{{el.name}}</a></div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                    {% for el in movies_in_serie %}
+                        <div class="row">
+                            <div class="col-4">
+                                    {% if el.link%}
+                                         <div class="embed-responsive embed-responsive-16by9 videoItem" >
+                                            <iframe class="embed-responsive-item" src="{{movie.muvie_src}}" allowfullscreen></iframe>
+                                        </div>
+                                    {% else %}
+                                        <video  controls class="videoItem">
+                                            <source src="{{movie.muvie_src}}" >
+                                        </video>
+                                   {% endif %}
+                            </div>
+                            <div class="col-8"><a href="{{path('show_movie',{id:el.id})}}">{{el.name}}</a></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

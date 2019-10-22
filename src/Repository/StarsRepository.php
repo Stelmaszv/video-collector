@@ -5,19 +5,19 @@ namespace App\Repository;
 use App\Entity\Stars;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-
+use App\Repository\abstractRepository;
 /**
  * @method Stars|null find($id, $lockMode = null, $lockVersion = null)
  * @method Stars|null findOneBy(array $criteria, array $orderBy = null)
  * @method Stars[]    findAll()
  * @method Stars[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class StarsRepository extends ServiceEntityRepository
+class StarsRepository extends abstractRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(ManagerRegistry $registry){
         parent::__construct($registry, Stars::class);
     }
+    
 
     // /**
     //  * @return Stars[] Returns an array of Stars objects

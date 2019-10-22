@@ -67,6 +67,11 @@ class Movies
      */
     private $series;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $link;
+
     public function __construct()
     {
         $this->stars = new ArrayCollection();
@@ -77,7 +82,17 @@ class Movies
     {
         return $this->id;
     }
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
 
+    public function setLink(string $name): self
+    {
+        $this->link = $name;
+
+        return $this;
+    }
     public function getName(): ?string
     {
         return $this->name;

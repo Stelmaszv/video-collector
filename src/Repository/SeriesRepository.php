@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Series;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use App\Repository\abstractRepository;
 
 /**
  * @method Series|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,18 +13,11 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Series[]    findAll()
  * @method Series[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SeriesRepository extends ServiceEntityRepository
+class SeriesRepository extends abstractRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Series::class);
-    }
-    public function list_of_movies_in_series(object $series){
-        $item=[];
-        foreach ($series->getMovies() as $el){
-            array_push($item,$el);
-        }
-        return $item;
     }
 
     // /**
