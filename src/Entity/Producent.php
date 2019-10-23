@@ -36,13 +36,10 @@ class Producent
      */
     private $movies;
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", inversedBy="producent")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Producent", inversedBy="Stars")
      */
     private $stars;
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Series", mappedBy="producent")
-     */
-    private $series;
+
 
     public function __construct()
     {
@@ -67,12 +64,12 @@ class Producent
     }
     public function getDescription(): ?string
     {
-        return $this->name;
+        return $this->description;
     }
 
     public function setDescription(string $name): self
     {
-        $this->name = $name;
+        $this->description = $name;
 
         return $this;
     }
@@ -83,7 +80,7 @@ class Producent
 
     public function setAvatar(string $name): self
     {
-        $this->avatar = $avatar;
+        $this->avatar = $name;
 
         return $this;
     }
@@ -117,10 +114,42 @@ class Producent
 
         return $this;
     }
-     /**
+    /**
      * @return Collection|Series[]
      */
-    public function getSeries(): Collection{
-        return $this->series;
+    public function getSeries(): Collection
+    {
+        return $this->movies;
+    }
+    /**
+     * @return Collection|stars[]
+     */
+    public function getStars()
+    {
+        return $this->stars;
+    }
+    public function addStar(stars $star): self
+    {
+
+            $this->stars[] = $star;
+        
+
+        return $this;
+    }
+
+    public function removeStar(stars $star): self
+    {
+        if ($this->stars->contains($star)) {
+            $this->stars->removeElement($star);
+            // set the owning side to null (unless already changed)
+            if ($star->getProducent() === $this) {
+                $star->setProducent(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString(){
+        return $this->name;
     }
 }

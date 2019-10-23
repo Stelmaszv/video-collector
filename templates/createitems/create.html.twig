@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{SectionName}}{% endblock %}
+{% block body %}
+<div class="form">
+    <h2>{{SectionName}}</h2>
+    {{ form(froms) }}
+</div>
+{% endblock %}

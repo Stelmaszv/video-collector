@@ -14,3 +14,7 @@
 .videoName{
     padding: 10px;
 }
+.form{
+    margin: auto;
+    max-width: 600px;
+}

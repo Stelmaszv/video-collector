@@ -39,6 +39,11 @@ class Stars
      * @ORM\OneToMany(targetEntity="App\Entity\Series", mappedBy="Movies")
      */
     private $series;
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", mappedBy="producent")
+     */
+    private $producent;
+    
 
     public function __construct()
     {

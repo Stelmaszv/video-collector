@@ -45,6 +45,7 @@ class NavigationController extends AbstractController{
             'photourl'=>'',
             'url'     =>'show_movie',
             'sectionName' =>'Star dqd'
+            
         ];
         return $this->navigationSetsection($StarsRepository,$array);
     }
@@ -121,13 +122,15 @@ class NavigationController extends AbstractController{
         /**
      * @Route("/showProducents", name="showProducents")
      */
-    public function showProducentslist (ProducentRepository $ProducentRepository){
+    public function showProducents (ProducentRepository $ProducentRepository){
         $array=[
             'function'=>'findAll',
             'templete'=>'navigation/itemlist.html.twig',
             'photourl'=>'producent',
             'sectionName' =>'Producents',
-            'url'     =>'show_series_in_producent'
+            'url'     =>'show_series_in_producent',
+            'editLink'=>'editProducent',
+            'deleteLink'=>'deleteProducent'
         ];
         return $this->navigationSetsection($ProducentRepository,$array);
     }
@@ -173,7 +176,9 @@ class NavigationController extends AbstractController{
             'items'=>$items,
             'photourl'=>$array['photourl'],
             'url'=>$array['url'],
-            'sectionName' =>$array['sectionName']
+            'sectionName' =>$array['sectionName'],
+            'editLink'=>$array['editLink'],
+            'deleteLink'=>$array['deleteLink']
         ]);
     }
     private function find($obj,$array){
