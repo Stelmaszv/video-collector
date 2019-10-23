@@ -28,10 +28,6 @@ class Series
      */
     private $movies;
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Producent", inversedBy="series")
-     */
-    private $producent;
-    /**
      * @ORM\Column(type="text")
      */
     private $description;
@@ -40,19 +36,14 @@ class Series
      */
     private $avatar;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Producent", inversedBy="series")
+     */
+    private $Producent;
+
     public function __construct()
     {
         $this->movies = new ArrayCollection();
-    }
-    
-    public function getProducent(): ?producent
-    {
-        return $this->producent;
-    }
-    public function setProducent(?producent $producent): self
-    {
-        $this->producent = $producent;
-        return $this;
     }
     public function getId(): ?int
     {
@@ -123,6 +114,16 @@ class Series
     }
     public function __toString(){
         return $this->name;
+    }
+
+    public function getProducent(): ?Producent
+    {
+        return $this->Producent;
+    }
+
+    public function setProducent(?Producent $Producent): self{
+        $this->Producent = $Producent;
+        return $this;
     }
     
 }

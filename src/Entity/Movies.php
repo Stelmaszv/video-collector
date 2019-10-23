@@ -41,12 +41,6 @@ class Movies
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $avatar;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Producent", inversedBy="movies")
-     */
-    private $producent;
-
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Tags", inversedBy="movies")
      */
@@ -72,10 +66,17 @@ class Movies
      */
     private $link;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Producent", inversedBy="movies")
+     */
+    private $Producent;
+
+
     public function __construct()
     {
         $this->stars = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->nSeries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,19 +165,6 @@ class Movies
 
         return $this;
     }
-
-    public function getProducent(): ?producent
-    {
-        return $this->producent;
-    }
-
-    public function setProducent(?producent $producent): self
-    {
-        $this->producent = $producent;
-
-        return $this;
-    }
-
     /**
      * @return Collection|tags[]
      */
@@ -241,4 +229,17 @@ class Movies
     public function __toString(){
         return $this->name;
     }
+
+    public function getProducent(): ?Producent
+    {
+        return $this->Producent;
+    }
+
+    public function setProducent(?NewProducent $Producent): self
+    {
+        $this->Producent = $Producent;
+
+        return $this;
+    }
+
 }

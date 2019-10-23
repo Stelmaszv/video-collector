@@ -22,28 +22,39 @@ class Producent
      * @ORM\Column(type="string", length=100)
      */
     private $name;
+
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
+
     /**
-     * @ORM\Column(type="string", length=250)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $avatar;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Movies", mappedBy="producent")
+     * @ORM\OneToMany(targetEntity="App\Entity\Movies", mappedBy="Producent")
      */
     private $movies;
+
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Producent", inversedBy="Stars")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", inversedBy="Producents")
      */
     private $stars;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Series", mappedBy="Producent")
+     */
+    private $series;
 
 
     public function __construct()
     {
         $this->movies = new ArrayCollection();
+        $this->stars = new ArrayCollection();
+        $this->series = new ArrayCollection();
+        $this->nSeries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -62,28 +73,31 @@ class Producent
 
         return $this;
     }
+
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $name): self
+    public function setDescription(?string $description): self
     {
-        $this->description = $name;
+        $this->description = $description;
 
         return $this;
     }
+
     public function getAvatar(): ?string
     {
         return $this->avatar;
     }
 
-    public function setAvatar(string $name): self
+    public function setAvatar(?string $avatar): self
     {
-        $this->avatar = $name;
+        $this->avatar = $avatar;
 
         return $this;
     }
+
     /**
      * @return Collection|Movies[]
      */
@@ -114,36 +128,58 @@ class Producent
 
         return $this;
     }
+
     /**
-     * @return Collection|Series[]
+     * @return Collection|Stars[]
      */
-    public function getSeries(): Collection
-    {
-        return $this->movies;
-    }
-    /**
-     * @return Collection|stars[]
-     */
-    public function getStars()
+    public function getStars(): Collection
     {
         return $this->stars;
     }
-    public function addStar(stars $star): self
-    {
 
+    public function addStar(Stars $star): self
+    {
+        if (!$this->stars->contains($star)) {
             $this->stars[] = $star;
-        
+        }
 
         return $this;
     }
 
-    public function removeStar(stars $star): self
+    public function removeStar(Stars $star): self
     {
         if ($this->stars->contains($star)) {
             $this->stars->removeElement($star);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|series[]
+     */
+    public function getSeries(): Collection
+    {
+        return $this->series;
+    }
+
+    public function addSeries(series $series): self
+    {
+        if (!$this->series->contains($series)) {
+            $this->series[] = $series;
+            $series->setProducent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeries(series $series): self
+    {
+        if ($this->series->contains($series)) {
+            $this->series->removeElement($series);
             // set the owning side to null (unless already changed)
-            if ($star->getProducent() === $this) {
-                $star->setProducent(null);
+            if ($series->getProducent() === $this) {
+                $series->setProducent(null);
             }
         }
 

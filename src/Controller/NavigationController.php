@@ -102,7 +102,9 @@ class NavigationController extends AbstractController{
             'photourl'=>'series',
             'sectionName' =>'Series',
             'templete'=>'navigation/itemlist.html.twig',
-            'url'     =>'show_movies_in_series'
+            'url'     =>'show_movies_in_series',
+            'editLink'=>'editProducent',
+            'deleteLink'=>'deleteProducent'
         ];
         return $this->navigationSetsection($SeriesRepository,$array);
     }
@@ -147,6 +149,8 @@ class NavigationController extends AbstractController{
             'photourl'=>'series',
             'url'     =>'show_movies_in_series',
             'sectionName' =>'Movies in series',
+            'editLink'=>'editSeries',
+            'deleteLink'=>'deleteProducent'
         ];
         return $this->navigationSetsection($ProducentRepository,$array);
     }
@@ -196,7 +200,9 @@ class NavigationController extends AbstractController{
             'items'=>$Repositorylist,
             'photourl'=>$array['photourl'],
             'url'=>$array['url'],
-            'sectionName' =>$array['sectionName']
+            'sectionName' =>$array['sectionName'],
+            'editLink'=>$array['editLink'],
+            'deleteLink'=>$array['deleteLink']
         ]);
     }
 

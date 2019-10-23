@@ -40,14 +40,16 @@ class Stars
      */
     private $series;
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", mappedBy="producent")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Producent", mappedBy="stars")
      */
-    private $producent;
-    
+    private $Producents;
+
 
     public function __construct()
     {
         $this->movies = new ArrayCollection();
+        $this->nproducents = new ArrayCollection();
+        $this->newProducents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -87,7 +89,10 @@ class Stars
 
         return $this;
     }
-
+    public function getProducent(): ?Producent
+    {
+        return $this->testtable;
+    }
     /**
      * @return Collection|Movies[]
      */
@@ -142,7 +147,35 @@ class Stars
 
         return $this;
     }
+    
     public function __toString(){
         return $this->name;
+    }
+    /**
+     * @return Collection|Producent[]
+     */
+    public function getProducents(): Collection
+    {
+        return $this->newProducents;
+    }
+
+    public function addProducent(Producent $Producent): self
+    {
+        if (!$this->Producents->contains($Producent)) {
+            $this->Producents[] = $Producent;
+            $Producent->addStar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNewProducent(NewProducent $newProducent): self
+    {
+        if ($this->Producents->contains($Producent)) {
+            $this->Producents->removeElement($Producent);
+            $Producent->removeStar($this);
+        }
+
+        return $this;
     }
 }

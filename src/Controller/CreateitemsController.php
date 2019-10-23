@@ -5,7 +5,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Producent;
 use App\Entity\Tags;
 use App\Entity\Series;
-use App\Form\ProducentType;
+use App\Form\PorducentEditType;
 use App\Form\TagsType;
 use App\Form\SeriesType;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,14 +14,20 @@ class CreateitemsController extends AbstractController{
     /**
      * @Route("/CreateSeries", name="CreateSeries")
      */
-    public function CreateSeries(Request $Request){
-        $settings=[
-            'twing'=>'createitems/create.html.twig',
-            'SectionName'=>'Create Series',
-            'header'=> 'showSeries',
-            'uplodUrl'=> 'series_directory'
-        ];
-        return $this->generateCreateview(SeriesType::class, new Series(),$settings,$Request);
+    public function CreateSeries(request $request){
+        $news= new Series();
+        $news->setAvatar('fqef');
+        $form= $this->createForm(SeriesType::class,$news);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $em =$this->getDoctrine()->getManager();
+            $em->persist($news);
+            $em->flush();
+        }
+        return $this->render('createitems/create.html.twig', [
+            'controller_name' => 'NewsController',
+            'froms'=> $form->createView()
+        ]);
     }
     /**
      * @Route("/CreateTags", name="CreateTags")
@@ -45,7 +51,25 @@ class CreateitemsController extends AbstractController{
             'header'=> 'showProducents',
             'uplodUrl'=> 'producent_directory'
         ];
-        return $this->generateCreateview(ProducentType::class, new Producent(),$settings,$Request);
+        return $this->generateCreateview(PorducentEditType::class, new Producent(),$settings,$Request);
+    }
+    /**
+     * @Route("/CreateTest", name="CreateTest")
+     */
+    public function CreateTest(Request $Request){
+        $series = new Series();
+        $form= $this->createForm($series,SeriesType::class);
+        $form->handleRequest();
+        if($form->isSubmitted()){
+            $em->$this->getDoctrine()->getManager();
+            $em->persist($series);
+            $em->flush();
+        }
+        return $this->render('createitems/create.html.twig', [
+            'froms'=> $form->createView(),
+            'SectionName'=>$settings['SectionName']
+        ]);
+        
     }
     private function generateCreateview($form,$Entity,$settings,$reguest){
         $form= $this->createForm($form,$Entity);

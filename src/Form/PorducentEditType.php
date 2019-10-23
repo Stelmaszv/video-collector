@@ -21,20 +21,8 @@ class PorducentEditType extends AbstractType
                 'mapped' => false,
                 'required' => false,
             ])
-            ->add('series', EntityType::class, [
-                'class'        => 'App\Entity\Movies',
-                'choice_label' => 'name',
-                'label'        => 'Series',
-                'expanded'     => true,
-                'multiple'     => true,
-            ])
-            ->add('stars',EntityType::class, [
-                'class'        => 'App\Entity\Stars',
-                'choice_label' => 'name',
-                'label'        => 'Stars',
-                'expanded'     => true,
-                'multiple'     => true,
-            ])
+            ->add('series')
+            ->add('stars')
             ->add('save',SubmitType::class,[
                 'attr'=>[
                     'class' =>'btn btn-primary float-right'
