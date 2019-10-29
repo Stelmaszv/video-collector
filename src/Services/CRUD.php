@@ -8,18 +8,22 @@ class CRUD extends AbstractController{
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $this->submit($form,$entity,$settings);
+            if(isset($settings['header'])){
+                return $this->redirectToRoute($settings['header']);
+            }
         }
         return $this->twing($form,$settings);
     }
     public function reed($obj,$array){
         $function=$array['function'];
-        if(!isset($array['id'])){
+        if(!isset($array['functionarguments'])){
             $items=$obj->$function();
         }else{
-            $item=$obj->find($array['id']);
-            if($array['getName']){
-                $items=$obj->$function($item,$array['getName']);
+            if(isset($array['id'])){
+                $item=$obj->find($array['id']);
+                $array['functionarguments']['item']=$item;
             }
+            $items=$obj->$function($array['functionarguments']);
         }
         return $this->twing(false,$array,$items);
         

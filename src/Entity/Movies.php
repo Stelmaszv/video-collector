@@ -70,6 +70,10 @@ class Movies
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $linkSrc;
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $views;
 
     public function __construct()
     {
@@ -101,6 +105,17 @@ class Movies
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+    public function getViews(): ?string
+    {
+        return $this->views;
+    }
+
+    public function setViews(?string $view): self
+    {
+        $this->views = $view;
 
         return $this;
     }

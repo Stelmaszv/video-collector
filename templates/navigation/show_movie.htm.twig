@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}Hello MovieController!{% endblock %}
+{% block title %}{{movie.name}}{% endblock %}
 {% block body %}
     <div class="row">
         <div class="col-7">
@@ -13,7 +13,6 @@
                         <source src="{{movie.movieSrc}}" >
                     </video>
                 {% endif %}
-                <div class="videoName">{{movie.name}}</div>
                 <nav class="navbar navbar-light bg-light">
                     <a class="navbar-brand">Action</a>
                         <form class="form-inline actionlist">
@@ -21,27 +20,52 @@
                           <a href="{{path('editMovies',{id:movie.id})}}" class="btn btn-danger btn-sm">Delete</a>
                         </form>
                 </nav>
-                <i>{{movie.description}}</i>
-                <div class="row">
-                    <div class="col-2">
-                        tags
-                    </div>
-                    <div class="col-10">
-                        {% for el in tags %}
-                            <a href="{{path('show_movies_in_category',{id:el.id})}}">{{el}}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-2">
-                        stars
-                    </div>
-                    <div class="col-10">
-                        {% for el in stars %}
-                            <a href="{{path('show_movies_with_star',{id:el.id})}}">{{el}}</a>
-                        {% endfor %}
-                    </div>
-                </div>
+                <table class="table">
+                    <tbody>
+                       <tr>
+                         <td>Title</td>
+                         <td>{{movie.name}}</td>
+                      </tr>
+                      <tr>
+                          <td>Description</td>
+                          <td><i>{{movie.description}}</i></td>
+                      </tr>
+                      <tr>
+                        <td>Producent</td>
+                        <td><a href="{{path('faindProducents',{searchvalue:movie.producent})}}">{{movie.producent}}</a></td>
+                      </tr>
+                      <tr>
+                        <td>Series</td>
+                        <td><a href="{{path('faindSeries',{searchvalue:movie.series})}}">{{movie.series}}</a></td>
+                      </tr>
+                      <tr>
+                        <td>Categorys</td>
+                        <td>
+                            {% for el in tags %}
+                                <a href="{{path('show_movies_in_category',{id:el.id})}}">{{el}}</a>
+                            {% endfor %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Stars</td>
+                        <td>
+                            {% for el in stars %}
+                                <a href="{{path('show_movies_with_star',{id:el.id})}}">{{el}}</a>
+                            {% endfor %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Adddate</td>
+                        <td>
+                            {{date}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>views</td>
+                        <td>{{movie.views}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
             </div>
         </div>
         <div class="col-5">
@@ -71,7 +95,9 @@
                                         </video>
                                    {% endif %}
                             </div>
-                            <div class="col-8"><a href="{{path('show_movie',{id:el.id})}}">{{el.name}}</a></div>
+                            <div class="col-8"><a  dolongfilter href="{{path('show_movie',{id:el.id})}}">{{el.name}}</a>
+                                <div> views : {{el.views}}</div>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
@@ -89,7 +115,10 @@
                                         </video>
                                    {% endif %}
                             </div>
-                            <div class="col-8"><a href="{{path('show_movie',{id:el.id})}}">{{el.name}}</a></div>
+                            <div class="col-8">
+                                <a dolongfilter href="{{path('show_movie',{id:el.id})}}">{{el.name}} </a>
+                                <div> views : {{el.views}}</div>
+                            </div>  
                         </div>
                     {% endfor %}
                 </div>
@@ -107,7 +136,9 @@
                                         </video>
                                    {% endif %}
                             </div>
-                            <div class="col-8"><a href="{{path('show_movie',{id:el.id})}}">{{el.name}}</a></div>
+                            <div class="col-8"><a dolongfilter href="{{path('show_movie',{id:el.id})}}">{{el.name}}</a>
+                               <div> views : {{el.views}}</div>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>

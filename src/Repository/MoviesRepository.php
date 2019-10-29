@@ -29,39 +29,25 @@ class MoviesRepository extends abstractRepository
         }
         return $items;
     }
-    public function getMoviesWithStars(object $item,array $stars,int $id){
-        $items=[];
-        foreach($this->findAll() as $el){
-            if($el->getId()!=$id){
-                foreach($el->getStars() as $star){
-                    if($this->faindStarInArray($star->getName(),$stars)){
-                        array_push($items,$el);
-                    }
-                }
-            }
-        }
-        return $items;
-    }
-    public function getMoviesWithTags(object $item,array $stars,int $id){
-        $items=[];
-        foreach($this->findAll() as $el){
-            if($el->getId()!=$id){
-                foreach($el->getTags() as $star){
-                    if($this->faindStarInArray($star->getName(),$stars)){
-                        array_push($items,$el);
-                    }
-                }
-            }
-        }
-        return $items;
+    public function Orderby(){
+        $qb= $this->createQueryBuilder('m')
+        ->orderBy('m.views', 'DESC');
+        $query = $qb->getQuery();
+        return $query->execute();
 
     }
-    private function faindStarInArray(string $name,array $stars){
-        foreach($stars as $star){
-            if($name === $star->getName()){
-                return true;
-            }
-        }
+    public function getMoviesWithStars(object $item,array $stars,int $id){
+        return $this->faindArrayInRepository($item,$stars,$id,'getStars');
+    }
+    public function getMoviesWithTags(object $item,array $tags,int $id){
+        return $this->faindArrayInRepository($item,$tags,$id,'getTags');
+    }   
+    public function updateViews(object $item,object $em){
+        $views=$item->getViews();
+        $item->setViews($views+1);
+        $em->persist($item);
+        $em->flush();
+
     }
     // /**
     //  * @return Movies[] Returns an array of Movies objects

@@ -28,3 +28,19 @@
 .actionlist>a{
     margin-left: 10px;
 }
+.similarList{
+    margin-top: 10px;
+}
+.similarList>div>a{
+    font-size: 14px;
+}
+.formnavbar>.form-group>input{
+    width: 150px;
+}
+.formnavbar>.form-group>select{
+    width: 155px;
+    margin-right: 5px;
+}
+.formnavbar>.form-group>button{
+    width: 100px;
+}
