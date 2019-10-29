@@ -11,22 +11,30 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Producent
 {
-    /**
+     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
-
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=255)
      */
     private $name;
-
-    /**
+        /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Series", mappedBy="producent")
+     */
+    private $series;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", inversedBy="producents")
+     */
+    private $movies;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -34,34 +42,21 @@ class Producent
     private $avatar;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Movies", mappedBy="Producent")
-     */
-    private $movies;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", inversedBy="Producents")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", mappedBy="Producent")
      */
     private $stars;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Series", mappedBy="Producent")
-     */
-    private $series;
-
-
     public function __construct()
     {
-        $this->movies = new ArrayCollection();
-        $this->stars = new ArrayCollection();
         $this->series = new ArrayCollection();
-        $this->nSeries = new ArrayCollection();
+        $this->stars = new ArrayCollection();
+        $this->movies = new ArrayCollection();
     }
-
+ 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
+    }  
     public function getName(): ?string
     {
         return $this->name;
@@ -73,7 +68,6 @@ class Producent
 
         return $this;
     }
-
     public function getDescription(): ?string
     {
         return $this->description;
@@ -86,18 +80,36 @@ class Producent
         return $this;
     }
 
-    public function getAvatar(): ?string
+    /**
+     * @return Collection|Series[]
+     */
+    public function getSeries(): Collection
     {
-        return $this->avatar;
+        return $this->series;
     }
 
-    public function setAvatar(?string $avatar): self
+    public function addSeries(Series $series): self
     {
-        $this->avatar = $avatar;
+        if (!$this->series->contains($series)) {
+            $this->series[] = $series;
+            $series->setProducent($this);
+        }
 
         return $this;
     }
 
+    public function removeSeries(Series $series): self
+    {
+        if ($this->series->contains($series)) {
+            $this->series->removeElement($series);
+            // set the owning side to null (unless already changed)
+            if ($series->getProducent() === $this) {
+                $series->setProducent(null);
+            }
+        }
+
+        return $this;
+    }
     /**
      * @return Collection|Movies[]
      */
@@ -129,6 +141,21 @@ class Producent
         return $this;
     }
 
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+    function __toString(){
+        return $this->name;
+    }
+
     /**
      * @return Collection|Stars[]
      */
@@ -141,6 +168,7 @@ class Producent
     {
         if (!$this->stars->contains($star)) {
             $this->stars[] = $star;
+            $star->addProducent($this);
         }
 
         return $this;
@@ -150,42 +178,9 @@ class Producent
     {
         if ($this->stars->contains($star)) {
             $this->stars->removeElement($star);
+            $star->removeProducent($this);
         }
 
         return $this;
-    }
-
-    /**
-     * @return Collection|series[]
-     */
-    public function getSeries(): Collection
-    {
-        return $this->series;
-    }
-
-    public function addSeries(series $series): self
-    {
-        if (!$this->series->contains($series)) {
-            $this->series[] = $series;
-            $series->setProducent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSeries(series $series): self
-    {
-        if ($this->series->contains($series)) {
-            $this->series->removeElement($series);
-            // set the owning side to null (unless already changed)
-            if ($series->getProducent() === $this) {
-                $series->setProducent(null);
-            }
-        }
-
-        return $this;
-    }
-    public function __toString(){
-        return $this->name;
     }
 }

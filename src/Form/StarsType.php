@@ -1,28 +1,27 @@
 <?php
+
 namespace App\Form;
-use App\Entity\Series;
-use App\Entity\Producent;
+
+use App\Entity\Stars;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bridge\Doctrine\Form\Type\CollectionType;
-class SeriesType extends AbstractType
+class StarsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name')
-            ->add('description')
             ->add('avatar',FileType::class,[
                 'mapped' => false,
                 'required' => false,
             ])
-            ->add('producent', EntityType::class, [
-                'class'   => 'App\Entity\Producent',
-            ])
+            ->add('description')
+            ->add('movies')
+            ->add('series')
             ->add('save',SubmitType::class,[
                 'attr'=>[
                     'class' =>'btn btn-primary float-right'
@@ -34,7 +33,7 @@ class SeriesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Series::class,
+            'data_class' => Stars::class,
         ]);
     }
 }

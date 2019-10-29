@@ -7,86 +7,59 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\StarsRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\NstarsRepository")
  */
-class Stars
+class Nstars
 {
-     /**
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
 
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Movies", mappedBy="stars")
-     */
-    private $movies;
     /**
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $avatar;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
      */
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Series", mappedBy="stars")
+     * @ORM\OneToMany(targetEntity="App\Entity\Series", mappedBy="nstars")
      */
     private $series;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Producent", inversedBy="stars")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Producent", inversedBy="nstars")
      */
-    private $Producent;
+    private $producent;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Movies", inversedBy="nstars")
+     */
+    private $movies;
 
     public function __construct()
     {
-        $this->producents = new ArrayCollection();
-        $this->movies = new ArrayCollection();
         $this->series = new ArrayCollection();
-        $this->Producent = new ArrayCollection();
+        $this->producent = new ArrayCollection();
+        $this->movies = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
     }
-    /**
-     * @return Collection|Movies[]
-     */
-    public function getMovies(): Collection
-    {
-        return $this->movies;
-    }
 
-    public function addMovie(Movies $movie): self
-    {
-        if (!$this->movies->contains($movie)) {
-            $this->movies[] = $movie;
-            $movie->addStar($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMovie(Movies $movie): self
-    {
-        if ($this->movies->contains($movie)) {
-            $this->movies->removeElement($movie);
-            $movie->removeStar($this);
-        }
-
-        return $this;
-    }
     public function getName(): ?string
     {
         return $this->name;
@@ -104,7 +77,7 @@ class Stars
         return $this->avatar;
     }
 
-    public function setAvatar(?string $avatar): self
+    public function setAvatar(string $avatar): self
     {
         $this->avatar = $avatar;
 
@@ -116,7 +89,7 @@ class Stars
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -135,7 +108,7 @@ class Stars
     {
         if (!$this->series->contains($series)) {
             $this->series[] = $series;
-            $series->setStars($this);
+            $series->setNstars($this);
         }
 
         return $this;
@@ -146,15 +119,12 @@ class Stars
         if ($this->series->contains($series)) {
             $this->series->removeElement($series);
             // set the owning side to null (unless already changed)
-            if ($series->getStars() === $this) {
-                $series->setStars(null);
+            if ($series->getNstars() === $this) {
+                $series->setNstars(null);
             }
         }
 
         return $this;
-    }
-    function __toString(){
-        return $this->name;
     }
 
     /**
@@ -162,13 +132,13 @@ class Stars
      */
     public function getProducent(): Collection
     {
-        return $this->Producent;
+        return $this->producent;
     }
 
     public function addProducent(Producent $producent): self
     {
-        if (!$this->Producent->contains($producent)) {
-            $this->Producent[] = $producent;
+        if (!$this->producent->contains($producent)) {
+            $this->producent[] = $producent;
         }
 
         return $this;
@@ -176,8 +146,34 @@ class Stars
 
     public function removeProducent(Producent $producent): self
     {
-        if ($this->Producent->contains($producent)) {
-            $this->Producent->removeElement($producent);
+        if ($this->producent->contains($producent)) {
+            $this->producent->removeElement($producent);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Movies[]
+     */
+    public function getMovies(): Collection
+    {
+        return $this->movies;
+    }
+
+    public function addMovie(Movies $movie): self
+    {
+        if (!$this->movies->contains($movie)) {
+            $this->movies[] = $movie;
+        }
+
+        return $this;
+    }
+
+    public function removeMovie(Movies $movie): self
+    {
+        if ($this->movies->contains($movie)) {
+            $this->movies->removeElement($movie);
         }
 
         return $this;

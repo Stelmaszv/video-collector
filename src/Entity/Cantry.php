@@ -17,16 +17,12 @@ class Cantry
      * @ORM\Column(type="integer")
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $name;
-
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Movies", mappedBy="cantry")
      */
     private $movies;
+
+
 
     public function __construct()
     {
@@ -36,18 +32,6 @@ class Cantry
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -80,4 +64,5 @@ class Cantry
 
         return $this;
     }
+
 }

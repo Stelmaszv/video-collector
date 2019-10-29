@@ -2,101 +2,139 @@
 namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use App\Entity\Producent;
 use App\Entity\Tags;
 use App\Entity\Series;
+use App\Entity\Movies;
+use App\Entity\Stars;
 use App\Form\PorducentEditType;
+use App\Form\MovieBydirType;
+use App\Form\MoviesType;
 use App\Form\TagsType;
 use App\Form\SeriesType;
+use App\Form\StarsType;
+use App\Services\CRUD;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Finder\Finder;
 
 class CreateitemsController extends AbstractController{
+
+    /**
+     * @Route("/CreateMoviesByDir", name="CreateMoviesByDir")
+     */
+    public function CreateMoviesByDir(request $request,CRUD $CRUD){
+        $movies= new Movies();
+        $movies->setTime(new \DateTime());
+        $settings=[
+            'templete'=>'createitems/create.html.twig',
+            'twing' => [
+                'title'=>'Create Movie by dir'
+            ]
+        ];
+        $finder = new Finder();
+        $form= $this->createForm(MovieBydirType::class,$movies);
+
+        if(isset($_POST['movie_bydir']['save'])){
+
+            $name=$_POST['movie_bydir']['muvieSrc'];
+            $url='../'.$name;
+            $finder->files()->in($url);
+
+            foreach ($finder as $file) {
+                $movies= new Movies();
+                // dumps the relative path to the file
+                $fileName=$file->getRelativePathname();
+                $movies->setTime(new \DateTime());
+                $MuvieSrc=$url.'/'.$fileName;
+                $movies->setMuvieSrc($MuvieSrc);
+                $movies->setName($fileName);
+                $movies->setProducent($form['Producent']->getData());
+                $movies->setLink(0);
+                $em =$this->getDoctrine()->getManager();
+                $em->persist($movies);
+                $em->flush();
+                
+            }
+        }
+        
+        return $this->render($settings['templete'], array(
+            'froms'      => $form->createView(),
+            'twing'      => $settings['twing'],
+            'item'       => false,
+        ));
+
+
+    } 
+
+   /**
+     * @Route("/CreateMovies", name="CreateMovies")
+     */
+    public function CreateMovies(request $request,CRUD $CRUD){
+        $movies= new Movies();
+        $movies->setTime(new \DateTime());
+        $settings=[
+            'templete'=>'createitems/create.html.twig',
+            'twing' => [
+                'title'=>'Create Movie'
+            ]
+        ];
+        return $CRUD->create(MoviesType::class,$movies,$request,$settings);
+    }
     /**
      * @Route("/CreateSeries", name="CreateSeries")
      */
-    public function CreateSeries(request $request){
-        $news= new Series();
-        $news->setAvatar('fqef');
-        $form= $this->createForm(SeriesType::class,$news);
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
-            $em =$this->getDoctrine()->getManager();
-            $em->persist($news);
-            $em->flush();
-        }
-        return $this->render('createitems/create.html.twig', [
-            'controller_name' => 'NewsController',
-            'froms'=> $form->createView()
-        ]);
+    public function CreateSeries(request $request,CRUD $CRUD){
+        $settings=[
+            'templete'=>'createitems/create.html.twig',
+            'photoField'=>'avatar',
+            'uplodUrl'=> 'series_directory',
+            'twing' => [
+                'title'=>'Create Series'
+            ]
+        ];
+        return $CRUD->create(SeriesType::class,new Series(),$request,$settings);
     }
     /**
      * @Route("/CreateTags", name="CreateTags")
      */
-    public function CreateTags(Request $Request){
+    public function CreateTags(Request $Request,CRUD $CRUD){
         $settings=[
-            'twing'=>'createitems/create.html.twig',
-            'SectionName'=>'Create Tags',
-            'header'=> 'showCategory',
-            'uplodUrl'=> 'tag_directory'
+            'templete'=>'createitems/create.html.twig',
+            'photoField'=>'avatar',
+            'uplodUrl'=> 'tag_directory',
+            'twing' => [
+                'title'=>'Create Category'
+            ]
         ];
-        return $this->generateCreateview(TagsType::class, new Tags(),$settings,$Request);
+        return $CRUD->create(TagsType::class, new Tags(),$Request,$settings);
     }
     /**
      * @Route("/createProducent", name="createProducent")
      */
-    public function CreateProducent(Request $Request){
+    public function CreateProducent(Request $Request,CRUD $CRUD){
         $settings=[
-            'twing'=>'createitems/create.html.twig',
-            'SectionName'=>'Create Producent',
-            'header'=> 'showProducents',
-            'uplodUrl'=> 'producent_directory'
+            'templete'=>'createitems/create.html.twig',
+            'photoField'=>'avatar',
+            'uplodUrl'=> 'producent_directory',
+            'twing' => [
+                'title'=>'Create Producent'
+            ]
         ];
-        return $this->generateCreateview(PorducentEditType::class, new Producent(),$settings,$Request);
+        return $CRUD->create(PorducentEditType::class, new Producent(),$Request,$settings);
     }
-    /**
-     * @Route("/CreateTest", name="CreateTest")
+        /**
+     * @Route("/createStars", name="createStars")
      */
-    public function CreateTest(Request $Request){
-        $series = new Series();
-        $form= $this->createForm($series,SeriesType::class);
-        $form->handleRequest();
-        if($form->isSubmitted()){
-            $em->$this->getDoctrine()->getManager();
-            $em->persist($series);
-            $em->flush();
-        }
-        return $this->render('createitems/create.html.twig', [
-            'froms'=> $form->createView(),
-            'SectionName'=>$settings['SectionName']
-        ]);
-        
-    }
-    private function generateCreateview($form,$Entity,$settings,$reguest){
-        $form= $this->createForm($form,$Entity);
-        $form->handleRequest($reguest);
-        if($form->isSubmitted() && $form->isValid()){
-            $brochureFile = $form['avatar']->getData();
-            if ($brochureFile) {
-                $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = md5(uniqid()).'.'.$brochureFile->guessExtension();
-                try {
-                    $brochureFile->move(
-                        $this->getParameter($settings['uplodUrl']),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $e->getMessage();
-                }
-                $Entity->setAvatar($newFilename);
-            }
-            $em =$this->getDoctrine()->getManager();
-            $em->persist($Entity);
-            $em->flush();
-            return $this->redirect($this->generateUrl($settings['header']));
-        }
-        return $this->render($settings['twing'], [
-            'froms'=> $form->createView(),
-            'SectionName'=>$settings['SectionName']
-        ]);
+    public function createStars(Request $Request,CRUD $CRUD){
+        $settings=[
+            'templete'=>'createitems/create.html.twig',
+            'photoField'=>'avatar',
+            'uplodUrl'=> 'producent_directory',
+            'twing' => [
+                'title'=>'Create Star'
+            ]
+        ];
+        return $CRUD->create(StarsType::class, new Stars(),$Request,$settings);
     }
 }

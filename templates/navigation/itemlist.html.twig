@@ -1,17 +1,19 @@
 {% extends 'base.html.twig' %}
 {% block title %}Hello MainController!{% endblock %}
 {% block body %}
-    <h2>{{sectionName}}</h2>
+    <h2>{{twing.sectionName}}</h2>
     <div class="cradSection">
-        {% for el in items %}
+        {% for el in item %}
             <div class="card">
-                <img src="{{ asset(photourl ~ '/' ~  el.avatar) }}" class="card-img-top" alt="...">
+                <img src="{{ asset(twing.photourl ~ '/' ~  el.avatar) }}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">{{el.name}}</h5>
                     <p class="card-text">{{el.description}}</p>
-                    <a href="{{path(url,{id:el.id})}}" class="btn btn-secondary btn-sm">Show</a>
-                    <a href="{{path(editLink,{id:el.id})}}" class="btn btn-primary btn-sm">Edit</a>
-                    <a href="{{path(deleteLink,{id:el.id})}}" class="btn btn-danger btn-sm">Delete</a>
+                    <div class="actionMenu">
+                        <a href="{{path(twing.url,{id:el.id})}}" class="btn btn-secondary btn-sm">Show</a>
+                        <a href="{{path(twing.editLink,{id:el.id})}}" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="{{path(twing.deleteLink,{id:el.id})}}" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
                 </div>
             </div>
         {% endfor %}

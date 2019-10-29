@@ -2,25 +2,21 @@
 
 namespace App\Form;
 
-use App\Entity\Producent;
+use App\Entity\Tags;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-class ProducentType extends AbstractType
+class CategoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('avatar')
             ->add('name')
             ->add('description')
-            ->add('avatar',FileType::class,[
-                'mapped' => false,
-                'required' => false,
-            ])
+            ->add('movies')
             ->add('save',SubmitType::class,[
                 'attr'=>[
                     'class' =>'btn btn-primary float-right'
@@ -32,7 +28,7 @@ class ProducentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Producent::class,
+            'data_class' => Tags::class,
         ]);
     }
 }

@@ -3,17 +3,25 @@
 {% block body %}
     <div class="row">
         <div class="col-7">
-                <h2 class="videoName">{{movie.name}}</h2>
             <div class="videoSection">
                 {% if movie.link%}
                     <div class="embed-responsive embed-responsive-16by9 videoItem" >
-                        <iframe class="embed-responsive-item" src="{{movie.muvie_src}}" allowfullscreen></iframe>
+                        <iframe class="embed-responsive-item" src="{{movie.linkSrc}}" allowfullscreen></iframe>
                     </div>
                 {% else %}
                     <video  controls class="videoItem">
-                        <source src="{{movie.muvie_src}}" >
+                        <source src="{{movie.movieSrc}}" >
                     </video>
                 {% endif %}
+                <div class="videoName">{{movie.name}}</div>
+                <nav class="navbar navbar-light bg-light">
+                    <a class="navbar-brand">Action</a>
+                        <form class="form-inline actionlist">
+                          <a href="{{path('editMovies',{id:movie.id})}}" class="btn btn-primary btn-sm">Edit</a>
+                          <a href="{{path('editMovies',{id:movie.id})}}" class="btn btn-danger btn-sm">Delete</a>
+                        </form>
+                </nav>
+                <i>{{movie.description}}</i>
                 <div class="row">
                     <div class="col-2">
                         tags
@@ -51,15 +59,15 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     {% for el in stars_in_movies %}
-                        <div class="row">
+                        <div class="row similarList">
                             <div class="col-4">
                                     {% if el.link%}
                                          <div class="embed-responsive embed-responsive-16by9 videoItem" >
-                                            <iframe class="embed-responsive-item" src="{{movie.muvie_src}}" allowfullscreen></iframe>
+                                            <iframe class="embed-responsive-item" src="{{el.linkSrc}}" allowfullscreen></iframe>
                                         </div>
                                     {% else %}
                                         <video  controls class="videoItem">
-                                            <source src="{{movie.muvie_src}}" >
+                                            <source src="{{el.movieSrc}}" >
                                         </video>
                                    {% endif %}
                             </div>
@@ -69,15 +77,15 @@
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     {% for el in tags_in_movies %}
-                        <div class="row">
+                        <div class="row similarList">
                             <div class="col-4">
                                     {% if el.link%}
                                          <div class="embed-responsive embed-responsive-16by9 videoItem" >
-                                            <iframe class="embed-responsive-item" src="{{movie.muvie_src}}" allowfullscreen></iframe>
+                                            <iframe class="embed-responsive-item" src="{{el.linkSrc}}" allowfullscreen></iframe>
                                         </div>
                                     {% else %}
                                         <video  controls class="videoItem">
-                                            <source src="{{movie.muvie_src}}" >
+                                            <source src="{{el.movieSrc}}" >
                                         </video>
                                    {% endif %}
                             </div>
@@ -87,15 +95,15 @@
                 </div>
                 <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                     {% for el in movies_in_serie %}
-                        <div class="row">
+                        <div class="row similarList">
                             <div class="col-4">
                                     {% if el.link%}
                                          <div class="embed-responsive embed-responsive-16by9 videoItem" >
-                                            <iframe class="embed-responsive-item" src="{{movie.muvie_src}}" allowfullscreen></iframe>
+                                            <iframe class="embed-responsive-item" src="{{el.linkSrc}}" allowfullscreen></iframe>
                                         </div>
                                     {% else %}
                                         <video  controls class="videoItem">
-                                            <source src="{{movie.muvie_src}}" >
+                                            <source src="{{el.movieSrc}}" >
                                         </video>
                                    {% endif %}
                             </div>

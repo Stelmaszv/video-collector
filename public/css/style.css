@@ -9,12 +9,22 @@
     margin-top: 10px;
 }
 .cradSection>.card>.card-body>.card-title{
-    height: 70px;
+    min-height: 70px;
+}
+.card-body>.card-title{
+    text-align: center;
+}
+.card-body>.card-text{
+    text-align: justify;
 }
 .videoName{
     padding: 10px;
+    text-align: center;
 }
 .form{
     margin: auto;
     max-width: 600px;
+}
+.actionlist>a{
+    margin-left: 10px;
 }

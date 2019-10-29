@@ -1,7 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}qfef{% endblock %}
+{% block title%}
+{% if item %}
+    {{twing.title ~ ' ' ~  item.name}}
+{% else %}
+    {{twing.title}}
+{% endif %}
+
+{% endblock %}
 {% block body %}
+<center>
+{% if item %}
+    <h2>{{twing.title ~ ' ' ~  item.name}}</h2>
+{% else %}
+    <h2>{{twing.title}}</h2>
+{% endif %}
+</center>
 <div class="form">
     {{ form(froms) }}
 </div>

@@ -11,23 +11,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Tags
 {
-    /**
+     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
-
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $avatar;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
     private $name;
-
     /**
      * @ORM\Column(type="text")
      */
@@ -38,6 +31,10 @@ class Tags
      */
     private $movies;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $avatar;
     public function __construct()
     {
         $this->movies = new ArrayCollection();
@@ -46,40 +43,6 @@ class Tags
     public function getId(): ?int
     {
         return $this->id;
-    }
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $avatar): self
-    {
-        $this->description = $avatar;
-
-        return $this;
-    }
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
-    public function setAvatar(?string $avatar): self
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -109,7 +72,42 @@ class Tags
 
         return $this;
     }
-    public function __toString(){
+    public function getName(): ?string
+    {
         return $this->name;
     }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+    function __toString(){
+        return $this->name;
+    }
+
 }

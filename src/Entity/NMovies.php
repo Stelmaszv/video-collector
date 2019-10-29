@@ -7,11 +7,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\MoviesRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\NMoviesRepository")
  */
-class Movies
+class NMovies
 {
-  /**
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -19,12 +19,7 @@ class Movies
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Series", inversedBy="movies")
-     */
-    private $series;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=100)
      */
     private $name;
 
@@ -34,42 +29,44 @@ class Movies
     private $movieSrc;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
      */
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", inversedBy="movies")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", inversedBy="nMovies")
      */
     private $stars;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tags", inversedBy="movies")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tags", inversedBy="nMovies")
      */
     private $tags;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     private $time;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Cantry", inversedBy="movies")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Cantry", inversedBy="nMovies")
      */
     private $cantry;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Series", inversedBy="link")
+     */
+    private $series;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $link;
+
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Producent", inversedBy="movies")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Producent", inversedBy="nMovies")
      */
     private $producent;
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $linkSrc;
 
     public function __construct()
     {
@@ -82,36 +79,14 @@ class Movies
         return $this->id;
     }
 
-    public function getSeries(): ?Series
-    {
-        return $this->series;
-    }
-
-    public function setSeries(?Series $series): self
-    {
-        $this->series = $series;
-
-        return $this;
-    }
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-    public function getLinkSrc(): ?string
-    {
-        return $this->linkSrc;
-    }
-
-    public function setLinkSrc(?string $name): self
-    {
-        $this->linkSrc = $name;
 
         return $this;
     }
@@ -124,6 +99,7 @@ class Movies
     public function setMovieSrc(?string $movieSrc): self
     {
         $this->movieSrc = $movieSrc;
+
         return $this;
     }
 
@@ -132,7 +108,7 @@ class Movies
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -196,7 +172,7 @@ class Movies
         return $this->time;
     }
 
-    public function setTime(?\DateTimeInterface $time): self
+    public function setTime(\DateTimeInterface $time): self
     {
         $this->time = $time;
 
@@ -211,6 +187,18 @@ class Movies
     public function setCantry(?Cantry $cantry): self
     {
         $this->cantry = $cantry;
+
+        return $this;
+    }
+
+    public function getSeries(): ?Series
+    {
+        return $this->series;
+    }
+
+    public function setSeries(?Series $series): self
+    {
+        $this->series = $series;
 
         return $this;
     }
@@ -237,8 +225,5 @@ class Movies
         $this->producent = $producent;
 
         return $this;
-    }
-    function __toString(){
-        return $this->name;
     }
 }

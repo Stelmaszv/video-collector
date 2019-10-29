@@ -2,84 +2,89 @@
 
 namespace App\Controller;
 use App\Entity\Producent;
+use App\Entity\Movies;
 use App\Entity\Series;
+use App\Entity\Tags;
+use App\Entity\Stars;
 use App\Form\PorducentEditType;
 use App\Form\SeriesType;
+use App\Form\TagsType;
+use App\Form\StarsType;
+use App\Form\MoviesType;
 use App\Repository\ProducentRepository;
 use App\Repository\SeriesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-  use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-  use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
-class EditController extends AbstractController
-{
-        /**
-     * @Route("/edit/{id}", name="editSeries")
-     */
-    
-    public function editSeries(Request $request, $id){
-        $article = new Series();
-        $article = $this->getDoctrine()->getRepository(Series::class)->find($id);
-        $form= $this->createForm(SeriesType::class,$article);
-
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-          $entityManager = $this->getDoctrine()->getManager();
-          $entityManager->flush();
-          return $this->redirectToRoute('showSeries');
-        }
-        return $this->render('createitems/create.html.twig', array(
-          'SectionName'=>'Edit series',
-          'froms' => $form->createView()
-        ));
+use App\Services\CRUD;
+class EditController extends AbstractController{
+    /**
+    * @Route("/editMovies/{id}", name="editMovies")
+    */
+    public function editMovies(Request $request, $id,CRUD $CRUD){
+        $settings=[
+            'templete'=>'createitems/create.html.twig',
+            'uplodUrl'=> 'series_directory',
+            'twing' => [
+                'title'=>'Edit Series'
+            ]
+        ];
+        return $CRUD->updata(MoviesType::class,Movies::class,$request,$id,$settings);
     }
     /**
-     * @Route("/editProducent/{id}", name="editProducent")
-     */
-    public function editProducent(Request $Request,ProducentRepository $ProducentRepository){
-        $Producent= new Producent();
-        $item=$ProducentRepository->find($Request->get('id'));
+    * @Route("/editSeries/{id}", name="editSeries")
+    */
+    public function editSeries(Request $request, $id,CRUD $CRUD){
         $settings=[
-            'twing'=>'createitems/create.html.twig',
-            'SectionName'=>'Edit Producent',
-            'header'=> 'showProducents',
-            'uplodUrl'=> 'producent_directory',
-            'file'=>'avatar'
+            'templete'=>'createitems/create.html.twig',
+            'photoField'=>'avatar',
+            'uplodUrl'=> 'series_directory',
+            'twing' => [
+                'title'=>'Edit Series'
+            ]
         ];
-        return $this->generateCreateview(PorducentEditType::class,$Producent,$settings,$Request);
+        return $CRUD->updata(SeriesType::class,Series::class,$request,$id,$settings);
     }
-    private function generateCreateview($form,$Entity,$settings,$reguest){
-        $form= $this->createForm($form,$Entity);
-        $form->handleRequest($reguest);
-        if($form->isSubmitted() && $form->isValid()){
-            if($settings['file']){
-                $brochureFile = $form[$settings['file']]->getData();
-                if ($brochureFile) {
-                    $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
-                    $newFilename = md5(uniqid()).'.'.$brochureFile->guessExtension();
-                    try {
-                        $brochureFile->move(
-                            $this->getParameter($settings['uplodUrl']),
-                            $newFilename
-                        );
-                    } catch (FileException $e) {
-                        $e->getMessage();
-                    }
-                    $Entity->setAvatar($newFilename);
-                }
-                }
-            $em =$this->getDoctrine()->getManager();
-            $em->persist($Entity);
-            $em->flush();
-            return $this->redirect($this->generateUrl($settings['header']));
-        }
-        return $this->render($settings['twing'], [
-            'froms'=> $form->createView(),
-            'SectionName'=>$settings['SectionName']
-        ]);
+    /**
+    * @Route("/editProducent/{id}", name="editProducent")
+    */
+    public function editProducent(Request $request, $id,CRUD $CRUD){
+        $settings=[
+            'templete'=>'createitems/create.html.twig',
+            'photoField'=>'avatar',
+            'uplodUrl'=> 'series_directory',
+            'twing' => [
+                'title'=>'Edit Producent'
+            ]
+        ];
+        return $CRUD->updata(PorducentEditType::class,Producent::class,$request,$id,$settings);
+    }
+    /**
+    * @Route("/editCategory/{id}", name="editCategory")
+    */
+    public function editCategory(Request $request, $id,CRUD $CRUD){
+        $settings=[
+            'templete'=>'createitems/create.html.twig',
+            'photoField'=>'avatar',
+            'uplodUrl'=> 'tag_directory',
+            'twing' => [
+                'title'=>'Edit Category'
+            ]
+        ];
+        return $CRUD->updata(TagsType::class,Tags::class,$request,$id,$settings);
+    }
+    /**
+    * @Route("/editStars/{id}", name="editStars")
+    */
+    public function editStars(Request $request, $id,CRUD $CRUD){
+        $settings=[
+            'templete'=>'createitems/create.html.twig',
+            'photoField'=>'avatar',
+            'uplodUrl'=> 'stars_directory',
+            'twing' => [
+                'title'=>'Edit Stars'
+            ]
+        ];
+        return $CRUD->updata(StarsType::class,Stars::class,$request,$id,$settings);
     }
 }

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Series
 {
-    /**
+   /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -19,32 +19,40 @@ class Series
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="string", length=255)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $avatar;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Movies", mappedBy="series")
      */
     private $movies;
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $description;
-    /**
-     * @ORM\Column(type="string", length=250)
-     */
-    private $avatar;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Producent", inversedBy="series")
      */
-    private $Producent;
+    private $producent;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Stars", inversedBy="series")
+     */
+    private $stars;
 
     public function __construct()
     {
         $this->movies = new ArrayCollection();
     }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,28 +68,31 @@ class Series
 
         return $this;
     }
+
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $name): self
+    public function setDescription(?string $description): self
     {
-        $this->description = $name;
+        $this->description = $description;
 
         return $this;
     }
+
     public function getAvatar(): ?string
     {
         return $this->avatar;
     }
 
-    public function setAvatar(string $name): self
+    public function setAvatar(?string $avatar): self
     {
-        $this->avatar = $name;
+        $this->avatar = $avatar;
 
         return $this;
     }
+
     /**
      * @return Collection|Movies[]
      */
@@ -112,18 +123,31 @@ class Series
 
         return $this;
     }
-    public function __toString(){
-        return $this->name;
-    }
 
     public function getProducent(): ?Producent
     {
-        return $this->Producent;
+        return $this->producent;
     }
 
-    public function setProducent(?Producent $Producent): self{
-        $this->Producent = $Producent;
+    public function setProducent(?Producent $producent): self
+    {
+        $this->producent = $producent;
+
         return $this;
     }
-    
+
+    public function getStars(): ?Stars
+    {
+        return $this->stars;
+    }
+
+    public function setStars(?Stars $stars): self
+    {
+        $this->stars = $stars;
+
+        return $this;
+    }
+    function __toString(){
+        return $this->name;
+    }
 }

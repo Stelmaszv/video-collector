@@ -9,7 +9,9 @@ use App\Repository\ProducentRepository;
 use App\Repository\SeriesRepository;
 use App\Repository\StarsRepository;
 use App\Repository\TagsRepository;
+use App\Services\CRUD;
 use Symfony\Component\HttpFoundation\Request;
+
 class NavigationController extends AbstractController{
       
      /**
@@ -35,175 +37,202 @@ class NavigationController extends AbstractController{
     /**
      * @Route("/show_movies_with_star/{id}", name="show_movies_with_star")
      */
-    public function show_movies_with_star(Request $Request,StarsRepository $StarsRepository){
+    public function show_movies_with_star(Request $Request,StarsRepository $StarsRepository,CRUD $CRUD){
         $array=[
-            'function'=>'findInRepository',
-            'functionInRepository'=>'getCollectionInEntity',
+            'function'=>'getCollectionInEntity',
             'getName'=>'Movies',
             'id'=> $Request->get('id'),
             'templete'=>'navigation/showmovies.htm.twig',
             'photourl'=>'',
             'url'     =>'show_movie',
-            'sectionName' =>'Star dqd'
+            'sectionName' =>'Star dqd',
+            'editLink'=>'editProducent',
+            'deleteLink'=>'deleteMovie',
+            'twing' => [
+                'title'=>'Edit Series',
+                'sectionName' =>'Show Movie with Star',
+                'editLink'    =>'editStars',
+                'deleteLink'  =>'deleteMovie',
+                'url'         =>'show_movies_with_star',
+            ]
             
         ];
-        return $this->navigationSetsection($StarsRepository,$array);
+        return $CRUD->reed($StarsRepository,$array);
     }
     /**
      * @Route("/show_movies_in_category/{id}", name="show_movies_in_category")
      */
     
-    public function show_movies_in_category(Request $Request,TagsRepository $TagsRepository){
+    public function show_movies_in_category(Request $Request,TagsRepository $TagsRepository,CRUD $CRUD){
         $array=[
             'sectionName' =>'Show movies in category',
-            'function'=>'findInRepository',
-            'functionInRepository'=>'getCollectionInEntity',
+            'function'=>'getCollectionInEntity',
             'getName'=>'Movies',
             'id'=> $Request->get('id'),
             'templete'=>'navigation/movielist.html.twig',
             'photourl'=>'',
             'url'     =>'show_movie',
+            'editLink'=>'editProducent',
+            'deleteLink'=>'deleteMovie',
+            'uplodUrl'=> 'series_directory',
+            'twing' => [
+                'photourl'    =>'stars',
+                'title'       =>'Edit Series',
+                'sectionName' =>'Movies',
+                'editLink'    =>'editMovies',
+                'deleteLink'  =>'deleteMovie',
+                'url'         =>'show_movies_with_star',
+            ]
         ];
-        return $this->navigationSetsection($TagsRepository,$array);
+        return $CRUD->reed($TagsRepository,$array);
     }
     /**
      * @Route("/showStars", name="showStars")
     */
     
-    public function showStars(StarsRepository $StarsRepository){
-        $array=[
+    public function showStars(StarsRepository $StarsRepository,CRUD $CRUD){
+        $settings=[
             'function'    =>'findAll',
-            'photourl'    =>'stars',
-            'templete'    =>'navigation/itemlist.html.twig',
-            'url'         =>'show_movies_with_star',
-            'sectionName' =>'series'
+            'templete'=>'navigation/itemlist.html.twig',
+            'photoField'=>'avatar',
+            'uplodUrl'=> 'series_directory',
+            'twing' => [
+                'photourl'    =>'stars',
+                'title'       =>'Edit Series',
+                'sectionName' =>'Stars',
+                'editLink'    =>'editStars',
+                'deleteLink'  =>'deleteStar',
+                'url'         =>'show_movies_with_star',
+            ]
         ];
-        return $this->navigationSetsection($StarsRepository,$array);
+        
+        return $CRUD->reed($StarsRepository,$settings);
     }
        /**
      * @Route("/showCategory", name="showCategory")
      */
-    public function showCategory(TagsRepository $TagsRepository){
+    public function showCategory(TagsRepository $TagsRepository,CRUD $CRUD){
         $array=[
             'function'=>'findAll',
-            'photourl'=>'tags',
-            'sectionName' =>'Category',
             'templete'=>'navigation/itemlist.html.twig',
-            'url'     =>'show_movies_in_category'
+            'url'     =>'show_movies_in_category',
+            'editLink'=>'editStars',
+            'deleteLink'=>'deleteMovie',
+            'twing' => [
+                'photourl'=>'tags',
+                'title'=>'Edit Series',
+                'sectionName' =>'Category',
+                'editLink'    =>'editCategory',
+                'deleteLink'  =>'deleteTag',
+                'url'         =>'show_movies_in_category',
+            ]
         ];
-        return $this->navigationSetsection($TagsRepository,$array);
+        return $CRUD->reed($TagsRepository,$array);
     }
        /**
      * @Route("/showSeries", name="showSeries")
      */
-    public function showSeries(SeriesRepository $SeriesRepository){
+    public function showSeries(SeriesRepository $SeriesRepository,CRUD $CRUD){
         $array=[
             'function'=>'findAll',
-            'photourl'=>'series',
-            'sectionName' =>'Series',
             'templete'=>'navigation/itemlist.html.twig',
-            'url'     =>'show_movies_in_series',
-            'editLink'=>'editProducent',
-            'deleteLink'=>'deleteProducent'
+            'twing' => [
+                'photourl'=>'series',
+                'title'=>'Edit Series',
+                'sectionName' =>'Series',
+                'editLink'    =>'editSeries',
+                'deleteLink'  =>'deleteSeries',
+                'url'         =>'show_movies_with_star',
+            ]
         ];
-        return $this->navigationSetsection($SeriesRepository,$array);
+        return $CRUD->reed($SeriesRepository,$array);
     }
     /**
      * @Route("/", name="main")
      */
-    public function showMovies (MoviesRepository $MoviesRepository){
+    public function showMovies (MoviesRepository $MoviesRepository,CRUD $CRUD){
         $array=[
             'function'=>'findAll',
             'templete'=>'navigation/showmovies.htm.twig',
             'photourl'=>'',
             'sectionName' =>'Movies',
-            'url'     =>'show_movie'
+            'url'     =>'show_movie',
+            'editLink'=>'editSeries',
+            'deleteLink'=>'deleteMovie',
+            'twing' => [
+                'title'       =>'Edit Series',
+                'sectionName' =>'Movies',
+                'editLink'    =>'editMovies',
+                'deleteLink'  =>'deleteMovie',
+                'url'         =>'show_movie',
+            ]
         ];
-        return $this->navigationSetsection($MoviesRepository,$array);
+        return $CRUD->reed($MoviesRepository,$array);
     }
         /**
      * @Route("/showProducents", name="showProducents")
      */
-    public function showProducents (ProducentRepository $ProducentRepository){
+    public function showProducents (ProducentRepository $ProducentRepository,CRUD $CRUD){
         $array=[
             'function'=>'findAll',
             'templete'=>'navigation/itemlist.html.twig',
-            'photourl'=>'producent',
-            'sectionName' =>'Producents',
-            'url'     =>'show_series_in_producent',
-            'editLink'=>'editProducent',
-            'deleteLink'=>'deleteProducent'
+            'twing' => [
+                'photourl'=>'producent',
+                'title'=>'Edit Series',
+                'sectionName' =>'Producents',
+                'editLink'    =>'editProducent',
+                'deleteLink'  =>'deleteProducents',
+                'url'         =>'show_series_in_producent',
+            ]
         ];
-        return $this->navigationSetsection($ProducentRepository,$array);
+        return $CRUD->reed($ProducentRepository,$array);
     }
     /**
      * @Route("/show_series_in_producent/{id}", name="show_series_in_producent")
      */
-    public function show_series_in_producent(Request $Request,ProducentRepository $ProducentRepository){
+    public function show_series_in_producent(Request $Request,ProducentRepository $ProducentRepository,CRUD $CRUD){
         $array=[
-            'function'=>'findInRepository',
-            'functionInRepository'=>'getCollectionInEntity',
+            'function'=>'getCollectionInEntity',
             'id'=> $Request->get('id'),
             'getName'=>'Series',
             'templete'=>'navigation/itemlist.html.twig',
-            'photourl'=>'series',
             'url'     =>'show_movies_in_series',
             'sectionName' =>'Movies in series',
             'editLink'=>'editSeries',
-            'deleteLink'=>'deleteProducent'
+            'deleteLink'=>'deleteMovie',
+            'twing' => [
+                'photourl'=>'series',
+                'title'=>'Edit Series',
+                'sectionName' =>'series',
+                'editLink'    =>'editStars',
+                'deleteLink'  =>'deleteMovie',
+                'url'         =>'show_movies_in_series',
+            ]
         ];
-        return $this->navigationSetsection($ProducentRepository,$array);
+        return $CRUD->reed($ProducentRepository,$array);
     }
         /**
      * @Route("/show_movies_in_series/{id}", name="show_movies_in_series")
      */
-    public function show_movies_in_series(Request $Request,SeriesRepository $SeriesRepository){
+    public function show_movies_in_series(Request $Request,SeriesRepository $SeriesRepository,CRUD $CRUD){
         $array=[
-            'function'=>'findInRepository',
-            'functionInRepository'=>'getCollectionInEntity',
+            'function'=>'getCollectionInEntity',
             'id'=> $Request->get('id'),
-            'templete'=>'navigation/movielist.html.twig',
+            'templete'=>'navigation/showmovies.htm.twig',
             'photourl'=>'series',
             'getName'=>'Movies',
             'url'     =>'show_movie',
             'sectionName' =>'Movies in series',
+            'editLink'=>'editProducent',
+            'deleteLink'=>'deleteMovie',
+            'twing' => [
+                'title'       =>'Edit Series',
+                'sectionName' =>'series',
+                'editLink'    =>'editStars',
+                'deleteLink'  =>'deleteMovie',
+                'url'         =>'show_movies_with_star',
+            ]
         ];
-        return $this->navigationSetsection($SeriesRepository,$array);
+        return $CRUD->reed($SeriesRepository,$array);
     }
-    private function navigationSetsection($obj,$array){
-        $function=$array['function'];
-        return $this->$function($obj,$array);
-    }
-    private function findAll($obj,$array){
-        $items=$obj->findAll();
-        return $this->render($array['templete'], [
-            'items'=>$items,
-            'photourl'=>$array['photourl'],
-            'url'=>$array['url'],
-            'sectionName' =>$array['sectionName'],
-            'editLink'=>$array['editLink'],
-            'deleteLink'=>$array['deleteLink']
-        ]);
-    }
-    private function find($obj,$array){
-        $item=$obj->find($array['id']);
-        return $this->render($array['templete'], [
-           'movie'=>$item
-        ]);
-    }
-    private function findInRepository($obj,$array){
-        $Repositorylist=[];
-        $item=$obj->find($array['id']);
-        $function=$array['functionInRepository'];
-        $Repositorylist=$obj->$function($item,$array['getName']);
-        return $this->render($array['templete'], [
-            'items'=>$Repositorylist,
-            'photourl'=>$array['photourl'],
-            'url'=>$array['url'],
-            'sectionName' =>$array['sectionName'],
-            'editLink'=>$array['editLink'],
-            'deleteLink'=>$array['deleteLink']
-        ]);
-    }
-
 }
