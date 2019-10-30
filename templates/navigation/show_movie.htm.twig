@@ -57,7 +57,7 @@
                       <tr>
                         <td>Adddate</td>
                         <td>
-                            {{date}}
+                            {{ movie.time | date('Y-m-d') }}, {{ movie.time | date('H:i:s') }}
                         </td>
                       </tr>
                       <tr>

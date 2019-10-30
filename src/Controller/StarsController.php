@@ -9,21 +9,38 @@ use App\Repository\StarsRepository;
 use App\Services\CRUD;
 use App\Entity\Stars;
 use App\Form\StarsType;
-
+use Knp\Component\Pager\PaginatorInterface;
+use App\Services\Pagination;
 class StarsController extends AbstractController
 {   
+    const itemtemolate='navigation/itemlist.html.twig';
+    const moviestemplete='navigation/showmovies.htm.twig';
+    const createtemplete='createitems/create.html.twig';
+    const upload='stars_directory';
+    function __construct(StarsRepository $StarsRepository,CRUD $CRUD,PaginatorInterface $paginator,Pagination $Pagination){
+        $this->Repository=$StarsRepository;
+        $this->CRUD=$CRUD;
+        $this->paginator=$paginator;
+        $this->pagination=$Pagination;
+        $this->Entity=new Stars;
+        $this->CreateForm=StarsType::class;
+        $this->EditForm=StarsType::class;
+        $this->Form=Stars::class;
+    }
     /**
      * @Route("/faindStars/{searchvalue}", name="faindStars")
     */
-    public function faindStars(StarsRepository $StarsRepository,CRUD $CRUD,Request $Request){
-        $settings=[
+    public function faindStars(request $request){
+        $array=[
             'function'=>'searchinRepository',
             'functionarguments'=>[
-                'searchvalue'=>$Request->get('searchvalue'),
+                'searchvalue'=>$request->get('searchvalue'),
             ],
-            'templete'=>'navigation/itemlist.html.twig',
-            'photoField'=>'avatar',
-            'uplodUrl'=> 'series_directory',
+            'request'       => $request,
+            'Repository'    => $this->Repository,
+            'pagination'    =>true,
+            'templete'      =>self::itemtemolate,
+            'photoField'    =>'avatar',
             'twing' => [
                 'photourl'    =>'stars',
                 'title'       =>'Edit Series',
@@ -34,18 +51,22 @@ class StarsController extends AbstractController
             ]
         ];
         
-        return $CRUD->reed($StarsRepository,$settings);
+        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
     }
     /**
      * @Route("/showStars", name="showStars")
     */
     
-    public function showStars(StarsRepository $StarsRepository,CRUD $CRUD){
-        $settings=[
+    public function showStars(request $request){
+        $array=[
             'function'    =>'findAll',
-            'templete'=>'navigation/itemlist.html.twig',
+            'pagination'=>true,
+            'functionarguments'=>[ ],
+            'Repository'    => $this->Repository,
+            'request'      => $request,
+            'templete'=>self::itemtemolate,
             'photoField'=>'avatar',
-            'uplodUrl'=> 'series_directory',
+            'uplodUrl'=> self::upload,
             'twing' => [
                 'photourl'    =>'stars',
                 'title'       =>'Edit Series',
@@ -56,24 +77,23 @@ class StarsController extends AbstractController
             ]
         ];
         
-        return $CRUD->reed($StarsRepository,$settings);
+        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
     }
     /**
      * @Route("/show_movies_with_star/{id}", name="show_movies_with_star")
      */
-    public function show_movies_with_star(Request $Request,StarsRepository $StarsRepository,CRUD $CRUD){
+    public function show_movies_with_star(Request $Request){
         $array=[
             'function'=>'getCollectionInEntity',
             'functionarguments'=>[
                 'getName'=>'Movies',
             ],
+            'pagination'=>true,
+            'Repository'    => $this->Repository,
+            'request'      => $Request,
             'id'=> $Request->get('id'),
-            'templete'=>'navigation/showmovies.htm.twig',
+            'templete'=>self::moviestemplete,
             'photourl'=>'',
-            'url'     =>'show_movie',
-            'sectionName' =>'Star dqd',
-            'editLink'=>'editProducent',
-            'deleteLink'=>'deleteMovie',
             'twing' => [
                 'title'=>'Edit Series',
                 'sectionName' =>'Show Movie with Star',
@@ -83,41 +103,41 @@ class StarsController extends AbstractController
             ]
             
         ];
-        return $CRUD->reed($StarsRepository,$array);
+        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
     }
     /**
     * @Route("/editStars/{id}", name="editStars")
     */
-    public function editStars(Request $request, $id,CRUD $CRUD){
+    public function editStars(Request $request, $id){
         $settings=[
-            'templete'=>'createitems/create.html.twig',
+            'templete'=>self::createtemplete,
             'photoField'=>'avatar',
-            'uplodUrl'=> 'stars_directory',
+            'uplodUrl'=> self::upload,
             'twing' => [
                 'title'=>'Edit Stars'
             ]
         ];
-        return $CRUD->updata(StarsType::class,Stars::class,$request,$id,$settings);
+        return $this->CRUD->updata($this->EditForm,$this->Form,$request,$id,$settings);
     }
     /**
      * @Route("/deleteStar/{id}", name="deleteStar")
      */
     public function deleteStar($id,CRUD $CRUD){
-        return $CRUD->delete($id,Stars::class,'showStars');
+        return $CRUD->delete($id,$this->Form,'showStars');
       }
     /**
      * @Route("/createStars", name="createStars")
      */
     public function createStars(Request $Request,CRUD $CRUD){
         $settings=[
-            'templete'=>'createitems/create.html.twig',
+            'templete'=>self::createtemplete,
             'photoField'=>'avatar',
-            'uplodUrl'=> 'producent_directory',
+            'uplodUrl'=> self::upload,
             'twing' => [
                 'title'=>'Create Star'
             ],
             'header'=>'showStars'
         ];
-        return $CRUD->create(StarsType::class, new Stars(),$Request,$settings);
+        return $CRUD->create($this->CreateForm, $this->Entity,$Request,$settings);
     }
 }

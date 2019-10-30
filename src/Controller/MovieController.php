@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Controller;
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,27 +9,43 @@ use App\Services\CRUD;
 use App\Form\MoviesType;
 use App\Form\MovieBydirType;
 use App\Entity\Movies;
+use Knp\Component\Pager\PaginatorInterface;
+use App\Services\Pagination;
 class MovieController extends AbstractController{
+    const moviestemplete='navigation/showmovies.htm.twig';
+    const createtemplete='createitems/create.html.twig';
+    const upload='series_directory';
+    function __construct(MoviesRepository $MoviesRepository,CRUD $CRUD,PaginatorInterface $paginator,Pagination $Pagination){
+        $this->Repository=$MoviesRepository;
+        $this->CRUD=$CRUD;
+        $this->paginator=$paginator;
+        $this->pagination=$Pagination;
+        $this->Entity=new Movies;
+        $this->CreateForm=MoviesType::class;
+        $this->EditForm=MoviesType::class;
+        $this->Form=Movies::class;
+        $this->createBydir=MovieBydirType::class;
+    }
     /**
     * @Route("/editMovies/{id}", name="editMovies")
     */
-    public function editMovies(Request $request, $id,CRUD $CRUD){
+    public function editMovies(Request $request, $id){
         $settings=[
-            'templete'=>'createitems/create.html.twig',
-            'uplodUrl'=> 'series_directory',
+            'templete'=>  self::createtemplete,
+            'uplodUrl'=>  self::upload,
             'twing' => [
                 'title'=>'Edit Series'
             ]
         ];
-        return $CRUD->updata(MoviesType::class,Movies::class,$request,$id,$settings);
+        return $this->CRUD->updata($this->EditForm,$this->Form,$request,$id,$settings);
     }
     /**
      * @Route("/show_movie/{id}", name="show_movie")
      */
-    public function show_movie(Request $Request,MoviesRepository $MoviesRepository){
-        $item=$MoviesRepository->find($Request->get('id'));
+    public function show_movie(Request $Request){
+        $item=$this->Repository->find($Request->get('id'));
         $em=$this->getDoctrine()->getManager();
-        $MoviesRepository->updateViews($item,$em);
+        $this->Repository->updateViews($item,$em);
         $TagsArgumsnts=[
             'item'=>$item,
             'getName'=>'Tags'
@@ -40,17 +54,16 @@ class MovieController extends AbstractController{
             'item'=>$item,
             'getName'=>'Stars'
         ];
-        $tags=$MoviesRepository->getCollectionInEntity($TagsArgumsnts);
-        $stars=$MoviesRepository->getCollectionInEntity($MoviesArgumsnts);
-        $stars_in_movies=$MoviesRepository->getMoviesWithStars($item,$stars,$Request->get('id'));
-        $tags_in_movies=$MoviesRepository->getMoviesWithTags($item,$tags,$Request->get('id'));
-        $movies_in_series=$MoviesRepository->getMoviesInSeries($item,$Request->get('id'));
+        $tags=$this->Repository->getCollectionInEntity($TagsArgumsnts);
+        $stars=$this->Repository->getCollectionInEntity($MoviesArgumsnts);
+        $stars_in_movies=$this->Repository->getMoviesWithStars($item,$stars,$Request->get('id'));
+        $tags_in_movies=$this->Repository->getMoviesWithTags($item,$tags,$Request->get('id'));
+        $movies_in_series=$this->Repository->getMoviesInSeries($item,$Request->get('id'));
 
         return $this->render('navigation/show_movie.htm.twig', [
             'stars'=>$stars,
             'movie'=>$item,
             'tags' =>$tags,
-            'date' =>$item->getTime()->format('d:m:Y:h:m:s'),
             'stars_in_movies' => $stars_in_movies,
             'tags_in_movies'  => $tags_in_movies,
             'movies_in_serie' => $movies_in_series
@@ -59,19 +72,22 @@ class MovieController extends AbstractController{
     /**
      * @Route("/faindMovies/{searchvalue}", name="faindMovies")
      */
-    public function faindMovies (MoviesRepository $MoviesRepository,CRUD $CRUD,request $request){
+    public function faindMovies (request $request){
         $array=[
             'function'=>'searchinRepository',
             'functionarguments'=>[
                 'searchvalue'=>$request->get('searchvalue'),
             ],
-            'templete'=>'navigation/showmovies.htm.twig',
-            'photourl'=>'',
-            'sectionName' =>'Movies',
-            'url'     =>'show_movie',
-            'editLink'=>'editSeries',
-            'deleteLink'=>'deleteMovie',
-            'twing' => [
+            'pagination'         => true,
+            'Repository'         => $this->Repository,
+            'templete'           => self::moviestemplete,
+            'photourl'           =>'',
+            'request'            => $request,
+            'sectionName'        =>'Movies',
+            'url'                =>'show_movie',
+            'editLink'           =>'editSeries',
+            'deleteLink'         =>'deleteMovie',
+            'twing'           => [
                 'title'       =>'Edit Series',
                 'sectionName' =>'Movies',
                 'editLink'    =>'editMovies',
@@ -79,20 +95,19 @@ class MovieController extends AbstractController{
                 'url'         =>'show_movie',
             ]
         ];
-        return $CRUD->reed($MoviesRepository,$array);
+        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
     }
     /**
      * @Route("/", name="main")
      */
-    public function showMovies (MoviesRepository $MoviesRepository,CRUD $CRUD){
+    public function showMovies (request $request){
         $array=[
-            'function'=>'Orderby',
-            'templete'=>'navigation/showmovies.htm.twig',
-            'photourl'=>'',
-            'sectionName' =>'Movies',
-            'url'     =>'show_movie',
-            'editLink'=>'editSeries',
-            'deleteLink'=>'deleteMovie',
+            'function'           => 'Orderby',
+            'functionarguments'  => [],
+            'pagination'         => true,
+            'Repository'         => $this->Repository,
+            'request'            => $request,
+            'templete'           => self::moviestemplete,
             'twing' => [
                 'title'       =>'Edit Series',
                 'sectionName' =>'Movies',
@@ -101,44 +116,43 @@ class MovieController extends AbstractController{
                 'url'         =>'show_movie',
             ]
         ];
-        return $CRUD->reed($MoviesRepository,$array);
+        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
     }
     /**
      * @Route("/deleteMovie/{id}", name="deleteMovie")
      */
-    public function deleteMovie($id,CRUD $CRUD){
-        return $CRUD->delete($id,Movies::class,'main');
-      }
+    public function deleteMovie($id){
+        return $this->CRUD->delete($id,$this->Form,'main');
+    }
     /**
      * @Route("/CreateMovies", name="CreateMovies")
      */
-    public function CreateMovies(request $request,CRUD $CRUD){
-        $movies= new Movies();
-        $movies->setTime(new \DateTime());
-        $movies->setViews(0);
+    public function CreateMovies(request $request){
+        $this->Entity->setTime(new \DateTime());
+        $this->Entity->setViews(0);
         $settings=[
-            'templete'=>'createitems/create.html.twig',
+            'templete'=>self::createtemplete,
             'twing' => [
                 'title'=>'Create Movie'
             ],
             'header'=>'main'
         ];
-        return $CRUD->create(MoviesType::class,$movies,$request,$settings);
+        return $this->CRUD->create($this->CreateForm,$this->Entity,$request,$settings);
     }
     /**
      * @Route("/CreateMoviesByDir", name="CreateMoviesByDir")
      */
-    public function CreateMoviesByDir(request $request,CRUD $CRUD){
-        $movies= new Movies();
-        $movies->setTime(new \DateTime());
+    public function CreateMoviesByDir(request $request){
+        $this->Entity->setTime(new \DateTime());
+        $this->Entity->setViews(0);
         $settings=[
-            'templete'=>'createitems/create.html.twig',
+            'templete'=>self::createtemplete,
             'twing' => [
                 'title'=>'Create Movie by dir'
             ]
         ];
         $finder = new Finder();
-        $form= $this->createForm(MovieBydirType::class,$movies);
+        $form= $this->createForm($this->createBydir,$this->Entity);
 
         if(isset($_POST['movie_bydir']['save'])){
 

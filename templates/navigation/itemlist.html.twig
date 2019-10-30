@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
-{% block title %}Hello MainController!{% endblock %}
+{% block title %}{{twing.sectionName}}{% endblock %}
 {% block body %}
     <h2>{{twing.sectionName}}</h2>
     <div class="cradSection">
-        {% for el in item %}
+        {% for el in results %}
             <div class="card">
                 <img src="{{ asset(twing.photourl ~ '/' ~  el.avatar) }}" class="card-img-top" alt="...">
                 <div class="card-body">
@@ -17,5 +17,8 @@
                 </div>
             </div>
         {% endfor %}
+    </div>
+        <div class="navigation">
+        {{ knp_pagination_render(results) }}
     </div>
 {% endblock %}

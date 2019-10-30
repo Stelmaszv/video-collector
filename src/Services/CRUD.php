@@ -14,20 +14,14 @@ class CRUD extends AbstractController{
         }
         return $this->twing($form,$settings);
     }
-    public function reed($obj,$array){
-        $function=$array['function'];
-        if(!isset($array['functionarguments'])){
-            $items=$obj->$function();
+    public function reed($array,$paginationinterface,$paginationobj){
+        if(isset($array['pagination'])){
+           return $paginationobj->paginate($array,$paginationinterface);
         }else{
-            if(isset($array['id'])){
-                $item=$obj->find($array['id']);
-                $array['functionarguments']['item']=$item;
-            }
-            $items=$obj->$function($array['functionarguments']);
+           return $this->show($array,$object);
         }
-        return $this->twing(false,$array,$items);
-        
     }
+
     public function updata($form,$entity,object $request,int $id,$settings=false){
         $entity = $this->getDoctrine()->getRepository($entity)->find($id);
         $form= $this->createForm($form,$entity);
@@ -44,6 +38,19 @@ class CRUD extends AbstractController{
         $entityManager->flush();
         return $this->redirectToRoute($header);
         
+    }
+    private function show($obj,$array){
+        $function=$array['function'];
+        if(!isset($array['functionarguments'])){
+            $items=$obj->$function();
+        }else{
+            if(isset($array['id'])){
+                $item=$obj->find($array['id']);
+                $array['functionarguments']['item']=$item;
+            }
+            $items=$obj->$function($array['functionarguments']);
+        }
+        return $this->twing(false,$array,$items); 
     }
     private function twing($form,$settings,$entity=false){
         if($form){

@@ -1,0 +1,21 @@
+{# ./templates/default/index.html.twig #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>My Application</title>
+    </head>
+    <body>
+        <ul>
+        {% for result in results %}
+            <li>
+                {{ result.name }} , {{ result.time | date('Y-m-d') }}, {{ result.time | date('H:i:s') }}</td>
+            </li>
+        {% endfor %}
+        </ul>
+        
+        <div class="navigation">
+            {{ knp_pagination_render(results) }}
+        </div>
+    </body>
+</html>

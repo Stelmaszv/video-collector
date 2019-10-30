@@ -1,10 +1,9 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}{{twing.sectionName}}{% endblock %}
 {% block body %}
     <h2>{{twing.sectionName}}</h2>
     <div class="cradSection">
-        {% for el in item %}
+        {% for el in results %}
             <div class="card">
                 <div class="embed-responsive embed-responsive-16by9">
                     {% if el.link%}
@@ -23,5 +22,8 @@
                 </div>
             </div>
         {% endfor %}
+    </div>
+    <div class="navigation">
+        {{ knp_pagination_render(results) }}
     </div>
 {% endblock %}

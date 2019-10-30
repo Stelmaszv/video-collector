@@ -9,57 +9,81 @@ use App\Repository\SeriesRepository;
 use App\Entity\Series;
 use App\Form\SeriesType;
 use App\Services\CRUD;
+use Knp\Component\Pager\PaginatorInterface;
+use App\Services\Pagination;
 class SeriesController extends AbstractController
-{
-
+{   
+    const itemtemolate='navigation/itemlist.html.twig';
+    const moviestemplete='navigation/showmovies.htm.twig';
+    const createtemplete='createitems/create.html.twig';
+    const upload='series_directory';
+    function __construct(SeriesRepository $SeriesRepository,CRUD $CRUD,PaginatorInterface $paginator,Pagination $Pagination){
+        $this->Repository=$SeriesRepository;
+        $this->CRUD=$CRUD;
+        $this->paginator=$paginator;
+        $this->pagination=$Pagination;
+        $this->Entity=new Series;
+        $this->CreateForm=SeriesType::class;
+        $this->EditForm=SeriesType::class;
+        $this->Form=Series::class;
+    }
          /**
      * @Route("/faindSeries/{searchvalue}", name="faindSeries")
      */
-    public function faindSeries(SeriesRepository $SeriesRepository,CRUD $CRUD,request $request){
+    public function faindSeries(request $request){
         $array=[
             'function'=>'searchinRepository',
+            'pagination'=>true,
             'functionarguments'=>[
                 'searchvalue'=>$request->get('searchvalue'),
             ],
-            'templete'=>'navigation/itemlist.html.twig',
+            'templete'      =>self::itemtemolate,
+            'Repository'    => $this->Repository,
+            'request'       => $request,
             'twing' => [
-                'photourl'=>'series',
-                'title'=>'Edit Series',
+                'photourl'    =>'series',
+                'title'       =>'Edit Series',
                 'sectionName' =>'Series',
                 'editLink'    =>'editSeries',
                 'deleteLink'  =>'deleteSeries',
                 'url'         =>'show_movies_with_star',
             ]
         ];
-        return $CRUD->reed($SeriesRepository,$array);
+        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
     }
        /**
      * @Route("/showSeries", name="showSeries")
      */
-    public function showSeries(SeriesRepository $SeriesRepository,CRUD $CRUD){
+    public function showSeries(request $request){
         $array=[
             'function'=>'findAll',
-            'templete'=>'navigation/itemlist.html.twig',
+            'pagination'=>true,
+            'templete'=>self::itemtemolate,
+            'functionarguments'=>[],
+            'Repository'    => $this->Repository,
+            'request'      => $request,
             'twing' => [
-                'photourl'=>'series',
-                'title'=>'Edit Series',
+                'photourl'    =>'series',
+                'title'       =>'Edit Series',
                 'sectionName' =>'Series',
                 'editLink'    =>'editSeries',
                 'deleteLink'  =>'deleteSeries',
-                'url'         =>'show_movies_with_star',
+                'url'         =>'show_movies_in_series',
             ]
-        ];
-        
-        return $CRUD->reed($SeriesRepository,$array);
+        ];        
+        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
     }
             /**
      * @Route("/show_movies_in_series/{id}", name="show_movies_in_series")
      */
-    public function show_movies_in_series(Request $Request,SeriesRepository $SeriesRepository,CRUD $CRUD){
+    public function show_movies_in_series(request $request){  
         $array=[
             'function'=>'getCollectionInEntity',
-            'id'=> $Request->get('id'),
-            'templete'=>'navigation/showmovies.htm.twig',
+            'pagination'=>true,
+            'Repository'    => $this->Repository,
+            'request'      => $request,
+            'id'=> $request->get('id'),
+            'templete'=>self::moviestemplete,
             'photourl'=>'series',
             'functionarguments'=>[
                 'getName'=>'Movies',
@@ -76,41 +100,42 @@ class SeriesController extends AbstractController
                 'url'         =>'show_movies_with_star',
             ]
         ];
-        return $CRUD->reed($SeriesRepository,$array);
+        //return $CRUD->reed($SeriesRepository,$array);     
+        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
     }
     /**
     * @Route("/editSeries/{id}", name="editSeries")
     */
-    public function editSeries(Request $request, $id,CRUD $CRUD){
+    public function editSeries(Request $request, $id){
         $settings=[
-            'templete'=>'createitems/create.html.twig',
+            'templete'=>self::createtemplete,
             'photoField'=>'avatar',
-            'uplodUrl'=> 'series_directory',
+            'uplodUrl'=> self::upload,
             'twing' => [
                 'title'=>'Edit Series'
             ]
         ];
-        return $CRUD->updata(SeriesType::class,Series::class,$request,$id,$settings);
+        return $this->CRUD->updata($this->EditForm,$this->Form,$request,$id,$settings);
     }
     /**
      * @Route("/deleteSeries/{id}", name="deleteSeries")
      */
-    public function deleteSeries($id,CRUD $CRUD){
-        return $CRUD->delete($id,Series::class,'showSeries');
+    public function deleteSeries($id){
+        return $this->CRUD->delete($id,$this->Form,'showSeries');
     }
     /**
      * @Route("/CreateSeries", name="CreateSeries")
      */
-    public function CreateSeries(request $request,CRUD $CRUD){
+    public function CreateSeries(request $request){
         $settings=[
-            'templete'=>'createitems/create.html.twig',
+            'templete'=>self::createtemplete,
             'photoField'=>'avatar',
-            'uplodUrl'=> 'series_directory',
+            'uplodUrl'=> self::upload,
             'twing' => [
                 'title'=>'Create Series'
             ],
             'header'=>'showSeries'
         ];
-        return $CRUD->create(SeriesType::class,new Series(),$request,$settings);
+        return $this->CRUD->create($this->CreateForm,$this->Entity,$request,$settings);
     }
 }
