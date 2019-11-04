@@ -6,13 +6,7 @@
         {% for el in item %}
             <div class="card">
                 <div class="embed-responsive embed-responsive-16by9">
-                {% if el.link%}
-                    <iframe class="embed-responsive-item" src="{{el.linkSrc}}" class="card-img-top" allowfullscreen></iframe>
-                {% else %}
-                    <video  controls class="videoItem">
-                        <source src="{{el.movieSrc}}" >
-                    </video>
-                {% endif %}
+                <iframe class="embed-responsive-item" src="{{el.linkSrc}}" class="card-img-top" allowfullscreen></iframe>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">{{el.name}}</h5>

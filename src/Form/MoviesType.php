@@ -16,12 +16,7 @@ class MoviesType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('muvieSrc',FileType::class,[
-                'mapped' => false,
-                'required' => false,
-            ])
             ->add('linkSrc')
-            ->add('link')
             ->add('description')
             ->add('stars')
             ->add('tags')

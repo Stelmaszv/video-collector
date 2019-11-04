@@ -6,7 +6,6 @@ use Symfony\Component\Finder\Finder;
 use App\Repository\MoviesRepository;
 use App\Services\CRUD;
 use App\Form\MoviesType;
-use App\Form\MovieBydirType;
 use App\Entity\Movies;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Services\Pagination;
@@ -106,48 +105,5 @@ class MovieController extends AbstractnavigationController{
         $this->setings['entity']->setTime(new \DateTime());
         $this->setings['entity']->setViews(0);
         return $this->create($request);
-    }
-    /**
-     * @Route("/CreateMoviesByDir", name="CreateMoviesByDir")
-     */
-    public function CreateMoviesByDir(request $request){
-        $this->Entity->setTime(new \DateTime());
-        $this->Entity->setViews(0);
-        $settings=[
-            'templete'=>self::createtemplete,
-            'twing' => [
-                'title'=>'Create Movie by dir'
-            ]
-        ];
-        $finder = new Finder();
-        $form= $this->createForm($this->createBydir,$this->Entity);
-
-        if(isset($_POST['movie_bydir']['save'])){
-
-            $name=$_POST['movie_bydir']['muvieSrc'];
-            $url='../'.$name;
-            $finder->files()->in($url);
-
-            foreach ($finder as $file) {
-                $movies= new Movies();
-                $fileName=$file->getRelativePathname();
-                $movies->setTime(new \DateTime());
-                $MuvieSrc=$url.'/'.$fileName;
-                $movies->setMuvieSrc($MuvieSrc);
-                $movies->setName($fileName);
-                $movies->setProducent($form['Producent']->getData());
-                $movies->setLink(0);
-                $em =$this->getDoctrine()->getManager();
-                $em->persist($movies);
-                $em->flush();
-                return $this->redirectToRoute('main');
-                
-            }
-        }
-        return $this->render($settings['templete'], array(
-            'froms'      => $form->createView(),
-            'twing'      => $settings['twing'],
-            'item'       => false,
-        ));
     }
 }
