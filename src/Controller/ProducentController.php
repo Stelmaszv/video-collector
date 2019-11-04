@@ -11,126 +11,81 @@ use App\Entity\Producent;
 use App\Form\PorducentEditType;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Services\Pagination;
-
-class ProducentController extends AbstractController
+use App\Controller\AbstractnavigationController;
+use App\Services\Settings\producentSettings;
+use App\Services\Settings\seriesSettings;
+class ProducentController extends AbstractnavigationController
 {
-
     const itemtemolate='navigation/itemlist.html.twig';
     const moviestemplete='navigation/showmovies.htm.twig';
     const createtemplete='createitems/create.html.twig';
     const upload='producent_directory';
-    function __construct(ProducentRepository $ProducentRepository,CRUD $CRUD,PaginatorInterface $paginator,Pagination $Pagination){
-        $this->Repository=$ProducentRepository;
+    private $setings=[];
+    function __construct(ProducentRepository $ProducentRepository,CRUD $CRUD,PaginatorInterface $paginator,pagination $pagination){
+        $this->setings['createtemplete']=self::createtemplete;
+        $this->setings['itemtemolate']=self::itemtemolate;
+        $this->setings['createForm']=PorducentEditType::class;
+        $this->setings['EditForm']=PorducentEditType::class;
+        $this->setings['entity']=new Producent;
+        $this->setings['upload']=self::upload;
+        $this->setings['EditForm']=PorducentEditType::class;
+        $this->setings['Form']=Producent::class;
+        $this->setings['Repository']=$ProducentRepository;
         $this->CRUD=$CRUD;
         $this->paginator=$paginator;
-        $this->pagination=$Pagination;
-        $this->Entity=new Producent;
-        $this->CreateForm=PorducentEditType::class;
-        $this->EditForm=PorducentEditType::class;
-        $this->Form=Producent::class;
+        $this->pagination=$pagination;
+        parent::__construct(new producentSettings($this->setings)); 
     }
     /**
      * @Route("/show_series_in_producent/{id}", name="show_series_in_producent")
      */
     public function show_series_in_producent(request $request){
-        $array=[
-            'function'           => 'getCollectionInEntity',
-            'id'=> $request->get('id'),
-            'functionarguments'=>[
-                  'getName'=>'Series'
-            ],
-            'pagination'         => true,
-            'Repository'         => $this->Repository,
-            'request'            => $request,
-            'templete'           => self::itemtemolate,
-            'twing' => [
-                'photourl'=>'producent',
-                'sectionName' =>'Series in Producent',
-                'editLink'    =>'editStars',
-                'deleteLink'  =>'deleteMovie',
-                'url'         =>'show_movies_in_series',
-            ]
-        ];
-        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
+        $series=new seriesSettings;
+        $this->setsetings->get($request,'reed');
+        $this->setsetings->setValue('templete',self::itemtemolate);
+        $this->setsetings->setValue('function','getCollectionInEntity');
+        $this->setsetings->setValue('functionarguments',[
+            'getName'=>'Series',
+        ]);
+        $this->setsetings->setValue('twing',$series->twingreedshema());
+        $data=$this->setsetings->returnSetings();
+        return $this->reed($request,$data);
     }
     /**
      * @Route("/faindProducents/{searchvalue}", name="faindProducents")
      */
     public function faindProducents(Request $request){
-        $array=[
-            'function'           => 'searchinRepository',
-            'pagination'         =>true,
-            'functionarguments'  =>[
-                'searchvalue'=>$request->get('searchvalue'),
-            ],
-            'Repository'         => $this->Repository,
-            'request'            => $request,
-            'templete'           => self::itemtemolate,
-            'twing'              => [
-                'photourl'       =>'producent',
-                'sectionName'    =>'Producents like "'.$request->get('searchvalue').'"',
-                'editLink'       =>'editProducent',
-                'deleteLink'     =>'deleteProducents',
-                'url'            =>'show_series_in_producent',
-            ]
-        ];
-        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
+        $this->setsetings->get($request,'reed');
+        $this->setsetings->setValue('templete',self::itemtemolate);
+        $this->setsetings->setValue('function','searchinRepository');
+        $this->setsetings->setValue('functionarguments',[
+            'searchvalue'=>$request->get('searchvalue'),
+        ]);
+        $data=$this->setsetings->returnSetings();
+        return $this->reed($request,$data);
     }
     /**
      * @Route("/showProducents", name="showProducents")
      */
     public function showProducent (Request $request){
-        $array=[
-            'function'           => 'findAll',
-            'pagination'=>true,
-            'functionarguments'  => [],
-            'Repository'         => $this->Repository,
-            'request'            => $request,
-            'templete'           => self::itemtemolate,
-            'twing' => [
-                'photourl'=>'producent',
-                'title'=>'Edit Series',
-                'sectionName' =>'Producents',
-                'editLink'    =>'editProducent',
-                'deleteLink'  =>'deleteProducents',
-                'url'         =>'show_series_in_producent',
-            ]
-        ];
-        return $this->CRUD->reed($array,$this->paginator,$this->pagination);
+        return $this->reed($request);
     }
         /**
     * @Route("/editProducent/{id}", name="editProducent")
     */
-    public function editProducent(Request $request, $id,CRUD $CRUD){
-        $settings=[
-            'templete'   => self::createtemplete,
-            'photoField' => 'avatar',
-            'uplodUrl'   => self::upload,
-            'twing'      => [
-                'title'=>'Edit Producent'
-            ]
-        ];
-        return $CRUD->updata(PorducentEditType::class,Producent::class,$request,$id,$settings);
+    public function editProducent($id,request $request){
+        return $this->updata($id,$request);
     }
     /**
      * @Route("/deleteProducents/{id}", name="deleteProducents")
      */
-    public function deleteProducents($id,CRUD $CRUD){
-        return $CRUD->delete($id,Producent::class,'showProducents');
+    public function deleteProducents($id,request $request){
+        return $this->delete($id,'showProducents',$request);
     }
     /**
      * @Route("/createProducent", name="createProducent")
      */
-    public function CreateProducent(Request $Request,CRUD $CRUD){
-        $settings=[
-            'templete'  => self::createtemplete,
-            'photoField'=> 'avatar',
-            'uplodUrl'  => self::upload,
-            'twing' => [
-                'title'=>'Create Producent'
-            ],
-            'header'=>'showProducents'
-        ];
-        return $CRUD->create(PorducentEditType::class, new Producent(),$Request,$settings);
+    public function CreateProducent(request $request){
+        return $this->create($request);
     }
 }

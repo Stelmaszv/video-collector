@@ -5,7 +5,7 @@
     <div class="cradSection">
         {% for el in results %}
             <div class="card">
-                <img src="{{ asset(twing.photourl ~ '/' ~  el.avatar) }}" class="card-img-top" alt="...">
+                <img src="{{ asset(twing.photourl ~ '/' ~  el.avatar) }}" class="card-img-top" width="100" height="100" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">{{el.name}}</h5>
                     <p class="card-text">{{el.description}}</p>
@@ -18,7 +18,7 @@
             </div>
         {% endfor %}
     </div>
-        <div class="navigation">
+    <div class="navigation pagination" >
         {{ knp_pagination_render(results) }}
     </div>
 {% endblock %}

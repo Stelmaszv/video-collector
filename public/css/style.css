@@ -44,3 +44,7 @@
 .formnavbar>.form-group>button{
     width: 100px;
 }
+.pagination{
+    width: 0px;
+    margin: auto; 
+}

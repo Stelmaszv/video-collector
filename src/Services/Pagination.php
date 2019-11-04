@@ -8,9 +8,11 @@ class Pagination extends AbstractController{
     private $obj;
     private $request;
     private $settings;
+    const limitOnPage=8;
     public function paginate($settings,$paginator){
         $this->setItems($settings);
-        if(isset($settings['id'])){
+        $request=$this->settings['request'];
+        if($request->get('id')!==NULL){
             return $this->faind($paginator);
         }else{
             return $this->normal($paginator);
@@ -20,14 +22,15 @@ class Pagination extends AbstractController{
         $function=$this->function;
          $this->settings['results'] = $paginator->paginate(
             $this->obj->$function($this->settings['functionarguments']),
-            $this->request->query->getInt('page', 1),2
+            $this->request->query->getInt('page', 1),self::limitOnPage
         );
         return $this->twing();
     }
     private function faind($paginator){
-        $this->settings['functionarguments']['item']=$this->obj->find($this->settings['id']);
+        $request=$this->settings['request'];
+        $this->settings['functionarguments']['item']=$this->obj->find($request->get('id'));
         $function=$this->function;
-        $this->settings['results'] = $paginator->paginate($this->obj->$function($this->settings['functionarguments']),$this->request->query->getInt('page', 1),2);
+        $this->settings['results'] = $paginator->paginate($this->obj->$function($this->settings['functionarguments']),$this->request->query->getInt('page', 1),self::limitOnPage);
         return $this->twing();
     }
     private function returnArgumants(){
