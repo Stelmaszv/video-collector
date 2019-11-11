@@ -12,8 +12,9 @@ use App\Services\Pagination;
 use App\Controller\AbstractnavigationController;
 use App\Services\Settings\moviesSettings;
 class MovieController extends AbstractnavigationController{
-    const moviestemplete='navigation/showmovies.htm.twig';
-    const createtemplete='createitems/create.html.twig';
+    const moviestemplete=      'navigation/showmovies.htm.twig';
+    const createtemplete=      'createitems/create.html.twig';
+    const itemtemolate=        'navigation/itemlist.html.twig';
     const upload='series_directory';
     function __construct(MoviesRepository $MoviesRepository,CRUD $CRUD,PaginatorInterface $paginator,Pagination $Pagination){
         $this->paginator=$paginator;
