@@ -6,11 +6,7 @@ use App\Services\CRUD;
 use Symfony\Component\HttpFoundation\Request;
 use App\Services\Settings\settingSet;
 abstract class AbstractnavigationController extends AbstractController{
-    public $setsetings;
-    protected $edit;
-    protected $create;
-    protected $reed;
-    private $setingsArray=[];
+    protected $setting;
     const itemtemolate='navigation/itemlist.html.twig';
     protected function __construct(object $seriesSettings){
         // implemenation of strategy for use settings
